@@ -62,26 +62,22 @@
 			</div>
 
 			<div class="mainContainer">
-				<div class="view_header">
-						<div class="title_view">DASHBOAR GENERAL</div>
-						<div class="btnTemplate">CREAR TEMPLANTE</div>
-				</div>
+				<HeaderMenu class="d-xl-block d-lg-block  d-md-block d-sm-none d-none" />
 
-				<div class="barraContainer">
-					<div class="border rounded-pill">
-					</div>
-				</div>
-
-				<div class="view">
-					<div>hola mundo</div>
-				</div>
 			</div>
+
+		<div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
+			<ShuttersTables />			
+		</div>
 		</div>
 
 	</div>
 </template>
 
 <script setup>
+
+		import HeaderMenu from './HeaderMenu.vue' //auth placeList 
+		import ShuttersTables from './ShuttersTables.vue'
 	
 </script>
 
@@ -89,6 +85,7 @@
 
 .menu{
 	width: 250px;
+	background: white;
 }
 
 .menu .logo{
@@ -178,52 +175,6 @@
 	height: auto;
 
 }
-
-.mainContainer .view_header {
-	display: flex; 
-	justify-content: space-between;
-	width: 100%;
-	position: relative;
-}
-
-
-.mainContainer .view_header .title_view{
-	color: #283469;
-	font-weight: 610;
-}
-
-
-.mainContainer .view_header .btnTemplate{
-	background: #283469; 
-	cursor: pointer; 
-	color: white;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 25px;
-	padding-right: 25px;
-	font-weight: 610;
-	border-radius: 12px 12px 12px 12px;
-}
-
-.mainContainer .barraContainer {
-	width: 100%; 
-	height: 48px; 
-	padding: 10px;
-}
-.mainContainer .barraContainer div {
-	height: 100%; 
-	background: #283469
-}
-
-
-
-.mainContainer .view {
-height: 80%;
-overflow: auto
-}
-
-
-
 .centered-element {
   margin: 0;
   position: absolute;

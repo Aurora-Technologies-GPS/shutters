@@ -1,0 +1,82 @@
+<template>
+<div class="containerShutter">
+	<div class="title_view">SHUTTERS</div>
+	<div class="subtitle">TIEMPO Y DISTANCIAS ESTIMADAS DE LLEGADA</div>
+	<div class="listContainer">
+			<ShuttersTables />	
+	</div>
+</div>
+</template>
+
+<script setup>
+
+	import ShuttersTables from './ShuttersTables.vue'
+	
+</script>
+<style scoped>
+
+.containerShutter{
+	height: 100%;
+	position: relative;
+
+
+}
+
+.title_view{
+	color: #283469;
+	font-weight: 610;
+	padding-top: 15px;
+}
+.subtitle{
+	color: #b1b3b7;
+	padding-bottom: 10px;
+}
+
+.listContainer{
+/*	max-height: 540px;*/
+	height:auto;
+	margin-bottom: 40px;
+	padding-right: 10px;
+	overflow: auto;
+
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #283469;
+  border-radius: 10px;
+}
+
+
+@media (min-height: 740px) {
+
+  .listContainer {
+   max-height:460px
+  }
+
+}
+
+@media (max-height: 840px) {
+
+  .listContainer {
+   height:200px
+  }
+
+}
+
+@media (min-height: 1200px) {
+
+  .listContainer {
+   height:900px
+  }
+
+}
+
+
+</style>
