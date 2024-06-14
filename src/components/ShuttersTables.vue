@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div style=" padding-right: 10px;">
 		<h2 v-if="serviceShutters_Out.length<1"  class="text-center" > No Hay Ningun Shutter</h2>
 			<div  v-for=" (dato, index) in serviceShutters_Out" :key="index" >
 
@@ -19,7 +19,7 @@
         </div>
 
             <div class="header_status">
-              <div><strong>{{ "Carro 1 "}}</strong></div>
+              <div><strong>{{ dato.name }}</strong></div>
               <div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
                     {{"dato.actualTime"}}
                   </div>
@@ -41,7 +41,7 @@
               <div class=" col-lg-8 col-xl-9 col-md-7 col-sm-8 col-8 "
                 style=" position: relative; margin-top: auto; margin-bottom: auto;">
                 <div class="col-12" style="font-size:14px; color: #bcbab9;">
-                  {{ "dato.start_label "}}
+                  {{ dato.origen}}
 
                 </div>
                 <div class="progress " role="progressbar" aria-label="Example with label" aria-valuenow="25"
@@ -49,14 +49,14 @@
       
                   <div class="estado d-xl-block d-lg-block  d-md-block d-sm-none d-none">
 
-                    {{"activo: "+" Hoy" }}
+                    {{"activo: "+dato.ultimaConexion }}
                   </div>
 
-                  <div class="progress-bar progress-bar-striped progress-bar-animated"
-                    :style="25"></div>
+                  <div  class="progress-bar progress-bar-striped progress-bar-animated"
+                    :style="{width:dato.porcentaje+'%'}">{{ dato.porcentaje +"%"}}</div>
                 </div>
                 <div class="col-12" style="text-align: right; font-size:14px; color: #bcbab9; ">
-                  {{ "Destino Final" }}
+                  {{ dato.destino }}
 
                 </div>
 
@@ -64,19 +64,19 @@
 
               <div class="col header_status">
                 <button type="button" class="btn btn-circle btn-xl d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-                  <span class="tituloBola">{{66}}</span>{{ Min }}
+                  <span class="tituloBola">{{dato.tiempoRestante}}</span>{{ "Min" }}
                   <img class="etaBT" src="../assets/etaBola.png">
                 </button>
                 <div class="text-center" style="border-right:dashed #bcbab9; padding-right: 20px;">
                   <span style="font-size:14px; color: #bcbab9;">Restante</span>
                   <br>
-                  <span>{{ 25 + " KM" }} </span>
+                  <span>{{ dato.kilometrosRestantes + " KM" }} </span>
                 </div>
 
                 <div class="text-center">
                   <span style="font-size:14px; color: #bcbab9;">llegada </span>
                   <br>
-                  <span>{{ "hoy"}}</span>
+                  <span>{{ dato.horaLLegada }}</span>
                 </div>
 
 
@@ -103,23 +103,28 @@
 
   import { ref } from 'vue';
 
-  import { find_Service_Shuttle,    } from './DataConector.js' 
+  let serviceShutters_Out= ref([{
+    name:"Ir al Mercado",
+    ultimaConexion:new Date().toLocaleString(),
+    origen:"Barahona",
+    destino:"La Romana",
+    kilometrosRestantes:65,
+    tiempoRestante:25,
+    porcentaje:37,
+    horaLLegada:new Date().toLocaleTimeString(),
 
-  let serviceShutters_Out= ref([])
+  },
+  {
+    name:"Ir al Mercado",
+    ultimaConexion:new Date().toLocaleString(),
+    origen:"Barahona",
+    destino:"La Romana",
+    kilometrosRestantes:65,
+    tiempoRestante:25,
+    porcentaje:37,
+    horaLLegada:new Date().toLocaleTimeString(),
 
-
-if (window.$cookies.isKey('authorized')){
-
-  find_Service_Shuttle(window.$cookies.get('authorized').user.hash).then(listShutter=>{
-     serviceShutters_Out.value=listShutter
-    console.log(listShutter)
-
-})
-
-}else{
-  console.log("Logeate Please")
-}
-
+  }])
 
 
 </script>

@@ -1,16 +1,9 @@
 <template>
 	<div>
-		<div class="view_header">
-			<div class="title_view">DASHBOAR GENERAL</div>
-			<div class="btnTemplate">CREAR TEMPLANTE</div>
-		</div>
 
-		<div data-toggle="collapse" href="#porcent_collapse"  aria-controls="porcent_collapse" >
 			<div class="barraContainer">
 				<div class="border rounded-pill"></div>
 			</div>
-		</div>
-		<div class="collapse show" id="porcent_collapse">
 
 			<div class="ledContainer">
 				<div class="row">
@@ -72,7 +65,6 @@
 				</div>
 			</div>
 
-		</div>
 		<div class="shutterList">
 			<ShuttersList />
 		</div>
@@ -87,30 +79,6 @@ import ShuttersList from './ShuttersList.vue' //
 </script>
 
 <style scoped>
-
-.view_header {
-	display: flex; 
-	justify-content: space-between;
-	width: 100%;
-	position: relative;
-}
-
-.view_header .title_view{
-	color: #283469;
-	font-weight: 610;
-}
-
-.view_header .btnTemplate{
-	background: #283469; 
-	cursor: pointer; 
-	color: white;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 25px;
-	padding-right: 25px;
-	font-weight: 610;
-	border-radius: 12px 12px 12px 12px;
-}
 
 .barraContainer {
 	width: 100%;

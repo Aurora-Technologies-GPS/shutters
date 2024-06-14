@@ -36,7 +36,7 @@
 /*	max-height: 540px;*/
 	height:auto;
 	margin-bottom: 40px;
-	padding-right: 10px;
+/*	padding-right: 10px;*/
 	overflow: auto;
 
 }
