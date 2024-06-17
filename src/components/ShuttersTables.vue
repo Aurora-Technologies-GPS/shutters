@@ -124,6 +124,28 @@
     porcentaje:37,
     horaLLegada:new Date().toLocaleTimeString(),
 
+  },
+  {
+    name:"Ir al Mercado",
+    ultimaConexion:new Date().toLocaleString(),
+    origen:"Barahona",
+    destino:"La Romana",
+    kilometrosRestantes:65,
+    tiempoRestante:25,
+    porcentaje:37,
+    horaLLegada:new Date().toLocaleTimeString(),
+
+  },
+  {
+    name:"Ir al Mercado",
+    ultimaConexion:new Date().toLocaleString(),
+    origen:"Barahona",
+    destino:"La Romana",
+    kilometrosRestantes:65,
+    tiempoRestante:25,
+    porcentaje:37,
+    horaLLegada:new Date().toLocaleTimeString(),
+
   }])
 
 

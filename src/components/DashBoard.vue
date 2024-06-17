@@ -77,9 +77,18 @@
 
 				<ShuttersTables v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
 
+				<TemplatesPages v-if="view.template" />
+
+				
+				<div v-if="view.showingAsignarShutter"  class="d-xl-block d-lg-block  d-md-block d-sm-none d-none">
+					<AddServicePage class="" />					
+				</div>
+
 				<div v-if="view.showingAddTemplate"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
 					<NuevoTemplate class="popFormContainer" />					
 				</div>
+
+				<ReportesPage v-if="view.reportes" />
 
 			</div>
 
@@ -101,19 +110,22 @@
 	import HeaderMenu from './HeaderMenu.vue' 
 	import ShuttersTables from './ShuttersTables.vue'
 	import NuevoTemplate from './NuevoTemplate.vue'
-
+	import TemplatesPages from './TemplatesPages.vue'
+	import ReportesPage from './ReportesPage.vue'
+	import AddServicePage from './AddServicePage.vue'
 
 
 
 	const view=ref({
-		homeView:true,
+		homeView:false,
 		shutterService:false,
-		template:false,
+		template:true,
 		reportes:false,
 		title:"DASHBOAR GENERAL",
 		btn:"CREAR TEMPLANTE",
 		btn_acction:1,
-		showingAddTemplate:false
+		showingAddTemplate:false,
+		showingAsignarShutter:false
 	})
 
 	function showHomeViewPage(){
@@ -125,6 +137,7 @@
 		view.value.template = false
 		view.value.reportes = false
 		view.value.showingAddTemplate=false
+		view.value.showingAsignarShutter=false
 	}
 
 	function showShutterServicePage(){
@@ -136,6 +149,7 @@
 		view.value.template = false
 		view.value.reportes = false
 		view.value.showingAddTemplate=false
+		view.value.showingAsignarShutter=false
 
 	}
 
@@ -148,14 +162,20 @@
 		view.value.template = true
 		view.value.reportes = false
 		view.value.showingAddTemplate=false
+		view.value.showingAsignarShutter=false
 	}
 
 	function showReportesPage(){
+		view.value.title="REPORTES"
+		view.value.btn="VER MAS"
+		view.value.btn_acction=4
+
 		view.value.homeView = false
 		view.value.shutterService = false
 		view.value.template = false
 		view.value.reportes = true
 		view.value.showingAddTemplate=false
+		view.value.showingAsignarShutter=false
 
 	}
 
@@ -166,7 +186,7 @@
 			addTemplate();
 			break;
 		case 2:
-			console.log("Creando un Shutter")
+			asignarShutt();
 			break;
 		case 3:
 			addTemplate();
@@ -179,9 +199,15 @@
 	}
 
 	function addTemplate(){
+		console.log("Creando un TEMP")
 		view.value.showingAddTemplate=true
 	}
 
+	function asignarShutt(){
+		console.log("Creando un Shutter")
+		view.value.shutterService=false
+		view.value.showingAsignarShutter=true
+	}
 	
 </script>
 

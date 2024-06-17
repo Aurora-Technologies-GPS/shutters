@@ -4,22 +4,18 @@
 			<form class="formContainer" @submit.prevent="enviar" >
 
 				<div class="form-group">
-					<label for="name">TITULO DEL TEMPLANTE</label>
-					<input v-model="adding.name" type="text" class="form-control" id="name" placeholder="" required>
+					<label for="name">TITULO DEL SHUTTER</label>
+					<input v-model="adding.name" type="text" class="form-control" id="name" placeholder=" ">
 				</div>
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="inputOrigen">ORIGEN</label>
-						<select v-model="adding.startPlaceId" id="inputOrigen" class="form-control" required>
-							<option value="volvo">Volvo</option>
-						</select>
+					<input v-model="adding.startPlaceId" type="text" class="form-control" id="name" placeholder="" readonly>
 					</div>
 
 					<div class="form-group col-md-6">
 						<label for="inputDestino">DESTINO</label>
-						<select v-model="adding.endPlaceId" id="inputDestino" class="form-control" required>
-							<option value="volvo">Volvo</option>
-						</select>
+						<input v-model="adding.endPlaceId" type="text" class="form-control" id="name" placeholder="" readonly>
 					</div>
 				</div>
 
@@ -36,12 +32,14 @@
 				</div>
 
 				<div class="form-group">
-					<label for="inputNota">NOTA</label>
-					<textarea class="form-control" id="inputNota" rows="3"></textarea>
+					<label for="name">Dispositivo</label>
+						<select v-model="adding.startPlaceId" id="inputOrigen" class="form-control" required>
+							<option value="volvo">Volvo</option>
+						</select>
 				</div>
 
 				<div class="text-center mb-1">
-					<button type="submit" >CREAR TEMPLANTE</button>
+					<button type="submit" >ASIGNAR</button>
 				</div>
 
         <div v-if="adding.saved">
@@ -61,9 +59,9 @@
 
 
 const adding=ref({
-  name:" ",
-  startPlaceId:null,
-  endPlaceId:null,
+  name:"LLEVAR COMIDA A ASU CASA DESPUES",
+  startPlaceId:"MIAMI",
+  endPlaceId:"LA VEGA",
   departureDue:"2024-06-03T22:44",
   arrivalDue:"2024-06-03T22:44",
   saved:false
