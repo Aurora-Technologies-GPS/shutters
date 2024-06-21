@@ -3,6 +3,8 @@
 		
 			<form class="formContainer" @submit.prevent="enviar" >
 
+				<i @click="hideMe()" class="bi bi-x btnCerrar"></i>
+
 				<div class="form-group">
 					<label for="name">TITULO DEL SHUTTER</label>
 					<input v-model="adding.name" type="text" class="form-control" id="name" placeholder=" ">
@@ -58,7 +60,7 @@
 </template>
 
 <script setup>
-	import { ref, defineProps, onMounted } from 'vue';
+	import { ref, defineProps, defineEmits, onMounted } from 'vue';
 	import { temp_tracker } from './DataConector.js'
 
 
@@ -123,7 +125,7 @@ try{
 
 	}catch{
 		// console.log(`NO se Convirtio isoDate ${isoDate}`)
-		return '2020-06-18T22:44'
+		return null
 	} 
 
 
@@ -142,10 +144,17 @@ function enviar(){
   },2000)
 }
 
+function hideMe(){
+	outGoingData('cerrar');
+}
+
 const incomingData = defineProps({
   in_template: Object,
   in_places: Object,
 })
+const outGoingData = defineEmits(
+	['cerrar']
+	)
 
 
 onMounted(async () => {
@@ -170,6 +179,13 @@ onMounted(async () => {
 	background: white;
 	border-radius: 15px 15px 15px 15px;
 	box-shadow: rgba(0, 0, 0, 0.49) 0px 0px 30px 10px;
+}
+
+.btnCerrar{
+	float: right; 
+	cursor: pointer; 
+	margin-top: -15px; 
+	font-size: 30px;
 }
 
 .formContainer label{

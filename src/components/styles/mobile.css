@@ -1,0 +1,31 @@
+
+.mobileView_container{
+	width:100%;
+	background: #283469;
+	padding-right:30px;
+	padding-left:20px;
+
+	display: flex;
+	justify-content: space-between;
+}
+
+.mobiMenuSelected{
+	color:white !important;
+}
+
+.mobileView_Menu{
+	color:grey;
+	padding:10px;
+	cursor: pointer; 
+
+	font-weight: 600;
+}
+
+.mobilebody{
+	margin-left:10px;
+}
+
+.mobileFormContainer{
+	padding-right:10px;
+	padding-bottom: 10px;
+}

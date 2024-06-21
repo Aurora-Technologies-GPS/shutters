@@ -2,12 +2,13 @@
 
 	<div>
 
+<!--  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none" -->
+	<div v-if="view.showingBinding" >
 
-	<div v-if="view.showingBinding"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-		<BindingPage :in_places="places_List" :in_template="template_Out" class="popFormContainer" />					
+		<BindingPage :in_places="places_List" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
 	</div>
 
-	<div  v-for=" (dato, index) in template_In" :key="index"  class="containerTemplates">
+	<div v-show="!view.showingBinding"  v-for=" (dato, index) in template_In" :key="index"  class="containerTemplates">
 		<div class="rows">
 			<div class="row">
 				<div class="col-md-5">
@@ -118,6 +119,12 @@ let template_Out= ref([{
 }
 ])
 
+function hideBinding() {
+
+	view.value.showingBinding=false
+
+ }
+
 
 temp_findTemplates("hash").then(res_templateList=>{
 
@@ -177,18 +184,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-
-	.popContainer {
-
-  position: absolute;
-  min-width: 800px;
-  height: auto;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 10%;
-  z-index: 2;
-
-}
 
 
 .popFormContainer {

@@ -21,7 +21,7 @@
             <div class="header_status">
               <div><strong>{{ `${dato.name} : ${dato.trackerLabel}` }}</strong></div>
               <div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
-                    {{"dato.actualTime"}}
+                    {{dato.ultimaConexion}}
                   </div>
               <div> {{ dato.status }}
                 <i class="ubication bi bi-geo-alt-fill"></i>
@@ -67,7 +67,8 @@
                   <span class="tituloBola">{{dato.tiempoRestante}}</span>{{ "Min" }}
                   <img class="etaBT" src="../assets/etaBola.png">
                 </button>
-                <div class="text-center" style="border-right:dashed #bcbab9; padding-right: 20px;">
+              <!--   style="border-right:dashed #bcbab9; padding-right: 20px;" -->
+                <div class="text-center" >
                   <span style="font-size:14px; color: #bcbab9;">Restante</span>
                   <br>
                   <span>{{ dato.kilometrosRestantes + " KM" }} </span>

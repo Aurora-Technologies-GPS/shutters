@@ -60,16 +60,24 @@ export async function temp_auth(params) {
 }
 
 
+export async function tempLogout(hash) {
+    let temp=hash
+    temp=""
+    await console.log(temp)
+    let data = true
+
+    return data
+}
+
 export async function logout(hash) {
     let data = []
-    await axios.get(api + '/v1/auth/logout/' + hash).then(response => {
+    await axios.get(api+'/v1/auth/logout/' + hash).then(response => {
         data = response.data
     }).catch(error => {
         console.log(error)
     });
     return data
 }
-
 export async function tracker(hash) {
     let data = []
     await axios.get(api + '/v1/tracker/list/' + hash).then(response => {

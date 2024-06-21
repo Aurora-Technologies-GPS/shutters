@@ -56,24 +56,45 @@
 				<div class="btnContainer">
 					<div class="centered-element btns">
 						<i class="bi bi-person-circle"></i> <span class="user">NOEL LORA</span>
-						<i class="bi bi-bell-fill"></i> <span class="logut">SIGN OUT</span>
+						<i class="bi bi-bell-fill"></i> <span @click="salir" class="logut">SIGN OUT</span>
 					</div>
 				</div>
+			</div>
+
+			<div class="d-xl-none d-lg-none d-md-none d-sm-block d-block mt-2" style="width: 100%;">
+
+				<div class="mobileView_container">
+
+					<div @click="mobiShowShuttersPage()" :class="{ mobiMenuSelected: view.mobiShutters}" class="mobileView_Menu text-center">
+						SHUTTERS
+					</div>
+<!-- 					<div @click="mobiShowtemplatePage()" :class="{ mobiMenuSelected: view.mobiTemplates}" class="mobileView_Menu text-center">
+						TEMPLATES
+					</div> -->
+					<div @click="mobiAsignarPage()" :class="{ mobiMenuSelected: view.mobiAsignar}" class="mobileView_Menu text-center">
+						ASIGNAR
+					</div>
+
+					<div @click="mobiShowAddTemplatePage()" :class="{ mobiMenuSelected: view.mobiAddTemplate}" class="mobileView_Menu text-center">
+						CREAR
+					</div>
+				</div>
+
 			</div>
 
 			<div class="mainContainer">
 
 				<div class="view_header">
-					<div class="title_view">{{view.title}}</div>
-					<div @click="btnFunction()" class="btnTemplate text-center">{{view.btn}}</div>
+
+<!-- --------------------- <<< HEAD vistas PC >>>>--------------------------->
+
+					<div class=" d-xl-block d-lg-block d-md-block d-sm-none d-none title_view">{{view.title}}</div>
+					<div @click="btnFunction()" class=" d-xl-block d-lg-block d-md-block d-sm-none d-none btnTemplate text-center">{{view.btn}}</div>
+<!-- --------------------- <<< FIN HEAD vistas PC >>>>--------------------------->
+
 				</div>
 
-<!-- 				<div v-if="view.showingAddTemplate_Temp" class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-					<NuevoTemplate class="popFormContainer" />					
-				</div> -->
-
-
-				<div v-if="view.homeView" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none">
+				<div v-if="view.homeView" class="d-xl-block d-lg-block d-md-block d-sm-none d-none">
 
 					<HeaderMenu />
 
@@ -96,19 +117,22 @@
 				</div>
 
 				<div v-if="view.showingAddTemplate"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-					<NuevoTemplate :in_places="places_List" class="popFormContainer" />					
+
+				<NuevoTemplate  @cerrar="hideAddTemplate" :in_places="places_List" class="popFormContainer" />			
+			
 				</div>
 
 				<ReportesPage v-if="view.reportes" />
 
 			</div>
 
-			<div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
-				<ShuttersTables :in_places="places_List" :in_templates="template_List" :in_trackers="trackers_List" v-if="view.homeView && !view.showingAddTemplate" />
-			</div>
+			<div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block mobilebody">
 
-			<div v-if="view.showingAddTemplate" class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
-				<NuevoTemplate :in_places="places_List"/>
+				<ShuttersTables v-if="view.mobiShutters" :in_places="places_List" :in_templates="template_List" :in_trackers="trackers_List"/>
+<!-- 				<TemplatesPages v-if="view.mobiTemplates" :in_places="places_List" class="mobileFormContainer" /> -->
+				<TemplatesPages v-if="view.mobiAsignar" :in_places="places_List" class="mobileFormContainer" />
+				<NuevoTemplate  v-if="view.mobiAddTemplate"  :in_places="places_List" class="mobileFormContainer" />
+				
 			</div>
 
 		</div>
@@ -123,7 +147,7 @@
 	import NuevoTemplate from './NuevoTemplate.vue'
 	import TemplatesPages from './TemplatesPages.vue'
 	import ReportesPage from './ReportesPage.vue'
-	import { temp_placeList , temp_tracker, temp_findTemplates } from './DataConector.js' 
+	import { temp_placeList , temp_tracker, temp_findTemplates, tempLogout } from './DataConector.js' 
 
 
 
@@ -132,6 +156,12 @@
 		shutterService:false,
 		template:false,
 		reportes:false,
+
+		mobiShutters:true,
+		mobiTemplates:false,
+		mobiAsignar:false,
+		mobiAddTemplate:false,
+
 		title:"DASHBOAR GENERAL",
 		btn:"CREAR TEMPLANTE",
 		btn_acction:1,
@@ -143,6 +173,9 @@
 	const trackers_List =ref( new Map());
 	const template_List= ref(new Map());
 
+	function hideAddTemplate(){
+		view.value.showingAddTemplate=false
+	}
 
 //----------<<<  trackers consult   >>----------
 	temp_tracker("hash").then(respTrackers=>{
@@ -238,6 +271,41 @@
 
 	}
 
+	function mobiShowShuttersPage(){
+
+		view.value.mobiAddTemplate=false
+		view.value.mobiShutters = true
+		view.value.mobiTemplates=false
+		view.value.mobiAsignar=false
+	}
+
+	function mobiAsignarPage(){
+
+		view.value.mobiAsignar=true
+		view.value.mobiAddTemplate=false
+		view.value.mobiTemplates=false
+		view.value.mobiShutters = false
+
+	}
+
+/*	function mobiShowtemplatePage(){
+
+		view.value.mobiAddTemplate=false
+		view.value.mobiTemplates=true
+		view.value.mobiShutters = false
+		view.value.mobiAsignar=false
+
+	}
+*/
+	function mobiShowAddTemplatePage(){
+
+		view.value.mobiTemplates=false
+		view.value.mobiAddTemplate=true
+		view.value.mobiShutters = false
+		view.value.mobiAsignar=false
+	}
+
+
 	function btnFunction(){
 
 		switch (view.value.btn_acction) {
@@ -267,12 +335,33 @@
 		view.value.shutterService=false
 		view.value.showingAsignarShutter=true
 	}//----------<<< FIN FUNCIONES DE VISTAS >>----------
+
+	function salir(){
+
+		try{
+			tempLogout("window.$cookies.get('authorized').user.hash").then(res_logout=>{
+
+    if (res_logout) {
+      console.log(res_logout)  
+      window.$cookies.remove('authorized') 
+      window.location.replace("./");
+
+    }else{
+      console.log("No se Pudo hacer Logout")
+    }
+  })
+
+		}catch(error){
+			console.log(error)
+		}
+}
 	
 </script>
 
 <style scoped>
 
 	@import url('./styles/tablaHome.css');
+	@import url('./styles/mobile.css');
 
 .view_header {
 	display: flex; 
@@ -285,7 +374,6 @@
 	color: #283469;
 	font-weight: 610;
 }
-
 
 .view_header .btnTemplate{
   background: #283469; 

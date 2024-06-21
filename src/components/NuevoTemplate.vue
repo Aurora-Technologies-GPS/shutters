@@ -1,7 +1,10 @@
 <template>
 	<div style="position: relative;">
+
 		
 			<form class="formContainer" @submit.prevent="enviar" >
+
+				<i @click="hideMe()" class="bi bi-x btnCerrar d-xl-block d-lg-block  d-md-block d-sm-none d-none"></i>
 
 				<div class="form-group">
 					<label for="name">TITULO DEL TEMPLANTE</label>
@@ -67,7 +70,7 @@
 
 <script setup>
 
-	import { ref, defineProps, onMounted } from 'vue';
+	import { ref, defineProps,defineEmits, onMounted } from 'vue';
 
 
 const adding=ref({
@@ -104,9 +107,19 @@ function enviar(){
   },2000)
 }
 
+
+function hideMe(){
+	outGoingData('cerrar');
+}
+
 const incomingData = defineProps({
   in_places: Object,
 })
+
+const outGoingData = defineEmits(
+	['cerrar']
+	)
+
 
 
 onMounted(async () => {
@@ -122,6 +135,13 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+.btnCerrar{
+	float: right; 
+	cursor: pointer; 
+	margin-top: -15px; 
+	font-size: 30px;
+}
 
 .formContainer{
 	padding: 40px;
