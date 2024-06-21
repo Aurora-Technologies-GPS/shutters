@@ -19,11 +19,11 @@
         </div>
 
             <div class="header_status">
-              <div><strong>{{ dato.name }}</strong></div>
+              <div><strong>{{ `${dato.name} : ${dato.trackerLabel}` }}</strong></div>
               <div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
                     {{"dato.actualTime"}}
                   </div>
-              <div> {{ "En Trasito" }}
+              <div> {{ dato.status }}
                 <i class="ubication bi bi-geo-alt-fill"></i>
               </div>
 
@@ -44,14 +44,14 @@
                   {{ dato.origen}}
 
                 </div>
+
                 <div class="progress " role="progressbar" aria-label="Example with label" aria-valuenow="25"
                   aria-valuemin="0" aria-valuemax="100">
-      
-                  <div class="estado d-xl-block d-lg-block  d-md-block d-sm-none d-none">
 
+                  <div class="estado d-xl-block d-lg-block  d-md-block d-sm-none d-none">
                     {{"activo: "+dato.ultimaConexion }}
                   </div>
-
+      
                   <div  class="progress-bar progress-bar-striped progress-bar-animated"
                     :style="{width:dato.porcentaje+'%'}">{{ dato.porcentaje +"%"}}</div>
                 </div>
@@ -101,53 +101,187 @@
 
 <script setup>
 
-  import { ref } from 'vue';
+  import { ref, defineProps, onMounted } from 'vue';
+  import { temp_find_Service_Shuttle  } from './DataConector.js'
+
+  const trackerList_MAP =ref( new Map())
+  const template_List_MAP= ref(new Map());
+  const places_List_MAP =ref( new Map())
+
+
+  let serviceShutters_In= ref([{
+    id: null,
+    shuttleId: null,
+    clientId: null,
+    userId: null,
+    trackerId: null,
+    statusId: null
+  }
+  ])
+
 
   let serviceShutters_Out= ref([{
-    name:"Ir al Mercado",
-    ultimaConexion:new Date().toLocaleString(),
-    origen:"Barahona",
-    destino:"La Romana",
-    kilometrosRestantes:65,
-    tiempoRestante:25,
-    porcentaje:37,
-    horaLLegada:new Date().toLocaleTimeString(),
 
-  },
-  {
-    name:"Ir al Mercado",
-    ultimaConexion:new Date().toLocaleString(),
-    origen:"Barahona",
-    destino:"La Romana",
-    kilometrosRestantes:65,
-    tiempoRestante:25,
-    porcentaje:37,
-    horaLLegada:new Date().toLocaleTimeString(),
+    id: null,
+    shuttleId: null,
+    clientId: null,
+    userId: null,
+    trackerId: null,
+    statusId: null,
+    trackerLabel: "trackerInfo(trackerId)",
+    name:"templateInfo(shuttleId).name",
+    origen:"templateInfo(shuttleId).startPlaceId",
+    destino:"templateInfo(shuttleId).destino",
+    ultimaConexion: etaInfo("id").ultimaConexion,
+    porcentaje: etaInfo("id").porcentaje,
+    tiempoRestante:etaInfo("id").tiempoRestante,
+    kilometrosRestantes: etaInfo("id").kilometrosRestantes,
+    horaLLegada: etaInfo("id").horaLLegada,
+    status: etaInfo("id").status,
+  }
+  ])
 
-  },
-  {
-    name:"Ir al Mercado",
-    ultimaConexion:new Date().toLocaleString(),
-    origen:"Barahona",
-    destino:"La Romana",
-    kilometrosRestantes:65,
-    tiempoRestante:25,
-    porcentaje:37,
-    horaLLegada:new Date().toLocaleTimeString(),
+  //------------------serviceShutters_In-------------------
+  temp_find_Service_Shuttle("hash").then(respServiceShuuter=>{
+    if (respServiceShuuter) {
 
-  },
-  {
-    name:"Ir al Mercado",
-    ultimaConexion:new Date().toLocaleString(),
-    origen:"Barahona",
-    destino:"La Romana",
-    kilometrosRestantes:65,
-    tiempoRestante:25,
-    porcentaje:37,
-    horaLLegada:new Date().toLocaleTimeString(),
+      serviceShutters_In.value=respServiceShuuter
+      serviceShutters_Out.value=[]
+      serviceShutters_In.value.forEach(elemServiceList=>{
 
-  }])
+        serviceShutters_Out.value.push({
+          id: elemServiceList.id,
+          shuttleId: elemServiceList.shuttleId,
+          clientId: elemServiceList.clientId,
+          userId: elemServiceList.userId,
+          trackerId: elemServiceList.trackerId,
+          statusId: elemServiceList.statusId,
+          trackerLabel: trackerInfo(elemServiceList.trackerId).label,
+          name:templateInfo(elemServiceList.shuttleId).name,
+          origen:placesInfo(templateInfo(elemServiceList.shuttleId).startPlaceId).name,
+          destino:placesInfo(templateInfo(elemServiceList.shuttleId).endPlaceId).name,
+          ultimaConexion: etaInfo(elemServiceList.id).ultimaConexion,
+          porcentaje: etaInfo(elemServiceList.id).porcentaje,
+          tiempoRestante:etaInfo(elemServiceList.id).tiempoRestante,
+          kilometrosRestantes: etaInfo(elemServiceList.id).kilometrosRestantes,
+          horaLLegada: etaInfo(elemServiceList.id).horaLLegada,
+          status: etaInfo(elemServiceList.id).status,
+        })
 
+      })
+    }else{
+      console.log("No se pudo consultar find_Service_Shuttle")
+    }
+
+
+  })
+  //------------------ FIN serviceShutters_In-------------------
+
+  function templateInfo(shuttleId){
+
+    try{
+
+      if (template_List_MAP.value.get(shuttleId).name) {
+
+        return template_List_MAP.value.get(shuttleId)
+      }
+
+    }catch(error){
+      console.log(error)
+
+      return {
+          id: shuttleId,
+          clientId: null,
+          userId: null,
+          startPlaceId: null,
+          departureDue: "2000-06-03T22:44:00.000-0400",
+          endPlaceId: shuttleId,
+          arrivalDue: "2000-06-03T22:44:00.000-0400",
+          name: "No encontro id "+shuttleId
+
+        }
+    }
+
+  }
+
+  //------------------------------------------------
+
+  function trackerInfo(trackerId){
+
+    try{
+      if (trackerList_MAP.value.get(trackerId).label) {
+        return trackerList_MAP.value.get(trackerId)
+      }
+
+    }catch(error){
+      console.log(error)
+      return {
+        id: trackerId,
+        deviceId: "N/A",
+        model: "N/A",
+        label: "No encontro el id "+trackerId,
+        created: "2000-05-21"
+    }
+    }
+
+  }
+
+//-----------------------------------------------
+
+  function placesInfo(placeId){
+
+  try{
+
+    if(places_List_MAP.value.get(placeId)){
+
+      return places_List_MAP.value.get(placeId)
+    }
+
+  }catch(error){
+    console.log(error)
+    // console.log(`No se Convirtio PlaceId ${PlaceId} (ERROR)`)
+    return placeId+"hoy"
+  }
+}
+
+placesInfo(1)
+
+//------------------------------------------
+
+  function etaInfo(ShutterServiceId){
+    let temp=ShutterServiceId
+    temp= " "
+    console.log(temp)
+    try{
+
+      const output={
+        ultimaConexion:new Date().toLocaleString(),
+        porcentaje:50,
+        tiempoRestante:60,
+        kilometrosRestantes:30,
+        horaLLegada: new Date().toLocaleTimeString(),
+        status: "En Trasito"
+      }
+      return output
+    }catch{
+      return ShutterServiceId
+    }
+  }
+
+  const incomingData = defineProps({
+  in_trackers: Object,
+  in_templates: Object,
+  in_places: Object,
+})
+
+
+onMounted(async () => {
+
+  trackerList_MAP.value=incomingData.in_trackers
+  template_List_MAP.value=incomingData.in_templates
+  places_List_MAP.value=incomingData.in_places
+
+})
 
 </script>
 

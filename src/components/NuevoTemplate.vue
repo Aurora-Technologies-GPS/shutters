@@ -7,19 +7,29 @@
 					<label for="name">TITULO DEL TEMPLANTE</label>
 					<input v-model="adding.name" type="text" class="form-control" id="name" placeholder="" required>
 				</div>
-				<div class="form-row">
+
+					<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="inputOrigen">ORIGEN</label>
-						<select v-model="adding.startPlaceId" id="inputOrigen" class="form-control" required>
-							<option value="volvo">Volvo</option>
+
+						<select v-model="adding.startPlaceId" id="inputTracker" class="form-control" required>
+							<option :value="place.id" v-for=" (place, index) in placesList" :key="index">
+								{{place.name}}
+							</option>
 						</select>
+
 					</div>
 
 					<div class="form-group col-md-6">
 						<label for="inputDestino">DESTINO</label>
-						<select v-model="adding.endPlaceId" id="inputDestino" class="form-control" required>
-							<option value="volvo">Volvo</option>
+
+						<select v-model="adding.endPlaceId" id="inputTracker" class="form-control" required>
+							<option :value="place.id" v-for=" (place, index) in placesList" :key="index">
+								{{place.name}}
+
+							</option>
 						</select>
+
 					</div>
 				</div>
 
@@ -37,7 +47,7 @@
 
 				<div class="form-group">
 					<label for="inputNota">NOTA</label>
-					<textarea class="form-control" id="inputNota" rows="3"></textarea>
+					<textarea v-model="adding.note" class="form-control" id="inputNota" rows="3"></textarea>
 				</div>
 
 				<div class="text-center mb-1">
@@ -57,17 +67,30 @@
 
 <script setup>
 
-  import { ref } from 'vue';
+	import { ref, defineProps, onMounted } from 'vue';
 
 
 const adding=ref({
   name:" ",
   startPlaceId:null,
   endPlaceId:null,
-  departureDue:"2024-06-03T22:44",
-  arrivalDue:"2024-06-03T22:44",
+  departureDue:null, //"2024-06-03T22:44
+  arrivalDue:null,//"2024-06-03T22:44"
+  note:"",
   saved:false
 })
+
+
+let placesList=ref([
+{
+			id: null,
+			name: "",
+			lat: 18.4872049,
+			lng: -69.95793343,
+			radius: null,
+			address: ""
+}
+])
 
 
 
@@ -77,10 +100,24 @@ function enviar(){
   adding.value.saved=true
 
   setTimeout(()=>{
-    window.location.replace("./dashboard");
+   window.location.replace("./dashboard");
   },2000)
 }
 
+const incomingData = defineProps({
+  in_places: Object,
+})
+
+
+onMounted(async () => {
+
+	placesList.value=[]
+
+	incomingData.in_places.forEach(elemt=>{
+		placesList.value.push(elemt)
+	});
+
+})
 
 </script>
 

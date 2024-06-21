@@ -65,17 +65,12 @@
 				</div>
 			</div>
 
-		<div class="shutterList">
-			<ShuttersList />
-		</div>
-
 	</div>
 
 </template>
 
 <script setup>
 
-import ShuttersList from './ShuttersList.vue' //
 </script>
 
 <style scoped>

@@ -17,16 +17,16 @@
 				<ul class="nav nav-pills flex-column mb-auto" style="	margin-top: 20%; ">
 
 					<li @click="showHomeViewPage()" class="menuTitles">
-						<div :class="{ pestanaActual: view.homeView}" class="seleccionContainer"></div>
+						<div :class="{ pestanaActual: view.homeView }" class="seleccionContainer"></div>
 						<div class="titleContainer">
-							<div :class="{ pestanaActualTexto: view.homeView}" class="centered-element texto">HOME</div> 							
+							<div :class="{ pestanaActualTexto: view.homeView }" class="centered-element texto">HOME</div> 							
 						</div>
 					</li>
 
 					<li @click="showShutterServicePage()" class="menuTitles">
-						<div :class="{ pestanaActual: view.shutterService}" class="seleccionContainer"></div>
+						<div :class="{ pestanaActual: view.shutterService || view.showingAsignarShutter}" class="seleccionContainer"></div>
 						<div class="titleContainer">
-							<div :class="{ pestanaActualTexto: view.shutterService}" class="centered-element texto">SHUTTERS</div>							
+							<div :class="{ pestanaActualTexto: view.shutterService || view.showingAsignarShutter}" class="centered-element texto">SHUTTERS</div>							
 						</div>
  
 					</li>
@@ -73,19 +73,30 @@
 				</div> -->
 
 
-				<HeaderMenu v-if="view.homeView" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none" />
+				<div v-if="view.homeView" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none">
 
-				<ShuttersTables v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
+					<HeaderMenu />
 
-				<TemplatesPages v-if="view.template" />
+					<div class="containerShutter">
+						<div class="title_views">SHUTTERS</div>
+						<div class="subtitle">TIEMPO Y DISTANCIAS ESTIMADAS DE LLEGADA</div>
+						<div class="listContainer">
+							<ShuttersTables :in_places="places_List" :in_templates="template_List" :in_trackers="trackers_List" />
+						</div>
+					</div>
+				</div>
+
+				<ShuttersTables :in_places="places_List" :in_templates="template_List" :in_trackers="trackers_List" v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
+
+				<TemplatesPages :in_places="places_List" v-if="view.template" />
 
 				
 				<div v-if="view.showingAsignarShutter"  class="d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-					<AddServicePage class="" />					
+					<TemplatesPages :in_places="places_List" />				
 				</div>
 
 				<div v-if="view.showingAddTemplate"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-					<NuevoTemplate class="popFormContainer" />					
+					<NuevoTemplate :in_places="places_List" class="popFormContainer" />					
 				</div>
 
 				<ReportesPage v-if="view.reportes" />
@@ -93,11 +104,11 @@
 			</div>
 
 			<div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
-				<ShuttersTables v-if="view.homeView && !view.showingAddTemplate" />
+				<ShuttersTables :in_places="places_List" :in_templates="template_List" :in_trackers="trackers_List" v-if="view.homeView && !view.showingAddTemplate" />
 			</div>
 
 			<div v-if="view.showingAddTemplate" class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
-				<NuevoTemplate/>
+				<NuevoTemplate :in_places="places_List"/>
 			</div>
 
 		</div>
@@ -112,14 +123,14 @@
 	import NuevoTemplate from './NuevoTemplate.vue'
 	import TemplatesPages from './TemplatesPages.vue'
 	import ReportesPage from './ReportesPage.vue'
-	import AddServicePage from './AddServicePage.vue'
+	import { temp_placeList , temp_tracker, temp_findTemplates } from './DataConector.js' 
 
 
 
 	const view=ref({
-		homeView:false,
+		homeView:true,
 		shutterService:false,
-		template:true,
+		template:false,
 		reportes:false,
 		title:"DASHBOAR GENERAL",
 		btn:"CREAR TEMPLANTE",
@@ -128,6 +139,54 @@
 		showingAsignarShutter:false
 	})
 
+	const places_List =ref( new Map());
+	const trackers_List =ref( new Map());
+	const template_List= ref(new Map());
+
+
+//----------<<<  trackers consult   >>----------
+	temp_tracker("hash").then(respTrackers=>{
+
+		if (respTrackers) {
+			respTrackers.list.forEach(elemTracker=>{
+				trackers_List.value.set(elemTracker.id, elemTracker)
+			})
+		}else{
+			console.log("ocurrio un Error al cargar places")
+		}
+	});//----------<<< FIN  trackers consult   >>----------
+
+
+
+//----------<<<  temp_findTemplates consult   >>----------
+	temp_findTemplates("hash").then(res_templateList=>{
+
+	if (res_templateList) {
+
+		res_templateList.forEach(elem_template=>{
+			template_List.value.set(elem_template.id, elem_template)
+		})
+
+	}else{
+		console.log("No se pudo Cargar Template List")
+	}
+})//----------<<< FIN  temp_findTemplates consult   >>----------
+
+
+//----------<<<  temp_placeList consult   >>----------
+	temp_placeList("hash").then(respPlaces=>{
+
+		if (respPlaces) {
+			respPlaces.list.forEach(elemPlace=>{
+				places_List.value.set(elemPlace.id, elemPlace)
+			})
+		}else{
+			console.log("ocurrio un Error al cargar places")
+		}
+	});//----------<<< FIN temp_placeList consult   >>----------
+
+
+//----------<<<  FUNCIONES DE VISTAS >>----------
 	function showHomeViewPage(){
 		view.value.title="DASHBOAR GENERAL"
 		view.value.btn="CREAR TEMPLANTE"
@@ -207,11 +266,13 @@
 		console.log("Creando un Shutter")
 		view.value.shutterService=false
 		view.value.showingAsignarShutter=true
-	}
+	}//----------<<< FIN FUNCIONES DE VISTAS >>----------
 	
 </script>
 
 <style scoped>
+
+	@import url('./styles/tablaHome.css');
 
 .view_header {
 	display: flex; 

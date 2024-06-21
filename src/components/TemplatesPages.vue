@@ -1,17 +1,20 @@
 <template>
 
+	<div>
+
+
 	<div v-if="view.showingBinding"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-		<BindingPage class="popFormContainer" />					
+		<BindingPage :in_places="places_List" :in_template="template_Out" class="popFormContainer" />					
 	</div>
 
-	<div class="containerTemplates">
+	<div  v-for=" (dato, index) in template_In" :key="index"  class="containerTemplates">
 		<div class="rows">
 			<div class="row">
 				<div class="col-md-5">
 
 					<div class="contRowTitle">
 
-						<div @click="bindTracker()" class="text-center iconoContainerTitle">
+						<div @click="bindTracker(dato)" class="text-center iconoContainerTitle">
 						<i class="bi bi-person-plus"></i>
 						<div class="title_text">ASIGNAR</div>
 							
@@ -20,13 +23,13 @@
 						<div class="tituloContainer">
 						<div>
 							<div class="title_temp">TITULO DEL TEMPLANTE:</div>
-							<div class="title_text">NOEL LORA LLEVAR COMIDA A SU CASA DESPUES DEL TRABAJO.</div>	
+							<div class="title_text">{{dato.name}}</div>	
 						</div>
 
 						<div style="height: 20px;">
 							
 						</div>
-						<div class="title_temp nota">NOTA: <span> test1 de la texteada</span></div>
+						<div class="title_temp nota">NOTA: <span>{{dato.note}}</span></div>
 							
 						</div>
 					</div>					
@@ -38,15 +41,15 @@
 
 						<div class="contenido">
 							<div>ORIGEN:</div>
-							<label>RES. COLINAS DEL SEMINARIO V, PROL. CALLE LA PELONA MANZ. A, SANTO DOMINGO 10606 </label>
+							<label>{{get_places_Label(dato.startPlaceId)}}</label>
 							<div>DESTINO:</div>
-							<label>RES. COLINAS DEL SEMINARIO V, PROL. CALLE LA PELONA MANZ. A, SANTO DOMINGO 10606</label>
+							<label>{{get_places_Label(dato.endPlaceId)}}</label>
 						</div>
 						<div class="contenido">
 							<div>SALIDA:</div>
-							<label>17/6/2024, 11:22:29</label>
+							<label>{{getTimeAndDate(dato.departureDue)}}</label>
 							<div>LLEGADA:</div>
-							<label>17/6/2024, 11:22:29</label>
+							<label>{{getTimeAndDate(dato.departureDue)}}</label>
 						</div>
 					</div>
 
@@ -71,24 +74,104 @@
 		</div>
 	</div>
 
+
+	</div>
+
 </template>
 
 <script setup>
 
 import BindingPage from './BindingPage.vue'
-import { ref } from 'vue'
+import { ref, defineProps, onMounted } from 'vue';
+import { temp_findTemplates  } from './DataConector.js' 
 
 const view=ref({
 	showingBinding:false
 })
 
+const places_List =ref( new Map())
 
-	function bindTracker(tracker_id){
-
-		console.log(tracker_id)
-
-		view.value.showingBinding=true
+let template_In= ref([
+{
+	id:null,
+	clientId:null,
+	userId:null,
+	name:"",
+	startPlaceId:null,
+	endPlaceId:null,
+	departureDue: "2020-06-04T02:44:57Z",
+	arrivalDue: "2020-06-04T02:44:57Z",
+	note:""
 }
+])
+
+let template_Out= ref([{
+	id:0,
+	clientId:0,
+	userId:0,
+	name:"",
+	startPlaceId:0,
+	endPlaceId:2117261,
+	departureDue: "",
+	arrivalDue: "",
+	note:""
+}
+])
+
+
+temp_findTemplates("hash").then(res_templateList=>{
+
+	if (res_templateList) {
+
+			template_In.value=res_templateList
+
+	}else{
+		console.log("No se pudo Cargar Template List")
+	}
+})
+
+
+function get_places_Label(placeId){
+
+	try{
+
+		const detailsPlace=places_List.value.get(placeId)
+		/*console.log(`se Convirtio PlaceId ${PlaceId} to String`)*/
+		return `${detailsPlace.name} : ${detailsPlace.address}`
+	}catch{
+		// console.log(`No se Convirtio PlaceId ${PlaceId} (ERROR)`)
+		return placeId
+	}
+}
+
+function getTimeAndDate(isoDate){
+	try{
+		// console.log(`se Convirtio isoDate ${isoDate} to Date`)
+
+		const dateOut=new Date(isoDate)
+		return dateOut.toLocaleString()
+
+	}catch{
+		// console.log(`NO se Convirtio isoDate ${isoDate}`)
+		return isoDate
+	} 
+}
+
+function bindTracker(template){
+	template_Out.value=template
+	view.value.showingBinding=true
+}
+
+const incomingData = defineProps({
+  in_places: Object,
+})
+
+
+onMounted(async () => {
+
+	places_List.value=incomingData.in_places
+
+})
 
 	
 </script>

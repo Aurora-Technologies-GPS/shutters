@@ -36,7 +36,7 @@
 
 <script setup>
 	import {ref} from 'vue'
-	import { auth, } from './DataConector.js' //auth placeList auth ,
+	import { temp_auth} from './DataConector.js' //auth placeList  , auth
 
 
 let datosUser=ref({username:"", password:""})
@@ -58,7 +58,30 @@ if (window.$cookies.isKey('authorized')){
 
 function consultar(){
 
-auth(datosUser.value).then(result=>{
+
+  temp_auth(datosUser.value).then(resAuth=>{
+
+    if (resAuth.Error) {
+      console.log("Clave Incorrecta")
+      claveIncorrecta.value=true
+    }else{
+
+      console.log("Bienvenido")
+      window.$cookies.set('authorized',datosUser.value)
+      window.$cookies.get('authorized')
+
+      setTimeout(()=>{
+     window.location.replace("./dashboard");
+      },100)
+
+
+    }
+
+  })
+
+  // fin temporal
+
+/*auth(datosUser.value).then(result=>{
 
   console.log(result)
 
@@ -83,7 +106,7 @@ auth(datosUser.value).then(result=>{
 
   }
   
-})
+})*/
 
 }
 

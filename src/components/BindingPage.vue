@@ -10,12 +10,12 @@
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="inputOrigen">ORIGEN</label>
-					<input v-model="adding.startPlaceId" type="text" class="form-control" id="name" placeholder="" readonly>
+					<input type="text" class="form-control" id="name" :placeholder="get_places_Label(adding.startPlaceId)" readonly>
 					</div>
 
 					<div class="form-group col-md-6">
 						<label for="inputDestino">DESTINO</label>
-						<input v-model="adding.endPlaceId" type="text" class="form-control" id="name" placeholder="" readonly>
+						<input type="text" class="form-control" id="name" :placeholder="get_places_Label(adding.endPlaceId)" readonly>
 					</div>
 				</div>
 
@@ -33,9 +33,13 @@
 
 				<div class="form-group">
 					<label for="name">Dispositivo</label>
-						<select v-model="adding.startPlaceId" id="inputOrigen" class="form-control" required>
-							<option value="volvo">Volvo</option>
+
+						<select v-model="adding.tracker_id" id="inputTracker" class="form-control" required>
+							<option :value="track.id" v-for=" (track, index) in trackersList.list" :key="index">
+								{{track.label}}
+							</option>
 						</select>
+
 				</div>
 
 				<div class="text-center mb-1">
@@ -54,18 +58,77 @@
 </template>
 
 <script setup>
+	import { ref, defineProps, onMounted } from 'vue';
+	import { temp_tracker } from './DataConector.js'
 
-  import { ref } from 'vue';
 
-
-const adding=ref({
-  name:"LLEVAR COMIDA A ASU CASA DESPUES",
-  startPlaceId:"MIAMI",
-  endPlaceId:"LA VEGA",
-  departureDue:"2024-06-03T22:44",
-  arrivalDue:"2024-06-03T22:44",
+let adding=ref({
+  name:"",
+  startPlaceId:null,
+  endPlaceId:null,
+  departureDue:getTimeAndDate("2020-06-04T02:44:57Z"),
+  arrivalDue:getTimeAndDate("2020-06-04T02:44:57Z"),
+  tracker_id:null,
   saved:false
 })
+
+let trackersList=ref({
+	client_id: null,
+	list: [
+		{
+			id: null,
+			deviceId: "",
+			model: "",
+			label: "",
+			created: "2020-05-21"
+		}
+	]
+})
+
+temp_tracker("hash").then(inTrackersList=>{
+	if (inTrackersList) {
+
+			trackersList.value=inTrackersList
+	}else{
+			console.log("No se pudo cargar Trackers")
+	}
+
+})
+
+
+const places_List =ref( new Map())
+
+
+function get_places_Label(placeId){
+
+	try{
+
+		const detailsPlace=places_List.value.get(placeId)
+		/*console.log(`se Convirtio PlaceId ${PlaceId} to String`)*/
+		return `${detailsPlace.name} `
+	}catch{
+		// console.log(`No se Convirtio PlaceId ${PlaceId} (ERROR)`)
+		return placeId
+	}
+}
+
+function getTimeAndDate(isoDate){
+
+try{
+		// console.log(`se Convirtio isoDate ${isoDate} to Date`)
+
+		const dateOut=new Date(isoDate)
+
+		return dateOut.toISOString().split('.')[0].substr(0,dateOut.toISOString().split('.')[0].length-3)
+
+	}catch{
+		// console.log(`NO se Convirtio isoDate ${isoDate}`)
+		return '2020-06-18T22:44'
+	} 
+
+
+}
+
 
 
 
@@ -78,6 +141,24 @@ function enviar(){
     window.location.replace("./dashboard");
   },2000)
 }
+
+const incomingData = defineProps({
+  in_template: Object,
+  in_places: Object,
+})
+
+
+onMounted(async () => {
+	adding.value.name=incomingData.in_template.name
+	adding.value.startPlaceId=incomingData.in_template.startPlaceId
+	adding.value.endPlaceId=incomingData.in_template.endPlaceId
+	adding.value.departureDue=getTimeAndDate(incomingData.in_template.departureDue)
+	adding.value.arrivalDue=getTimeAndDate(incomingData.in_template.arrivalDue)
+
+	places_List.value=incomingData.in_places
+
+
+})
 
 
 </script>
