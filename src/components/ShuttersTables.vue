@@ -105,7 +105,7 @@
   import { ref, defineProps, onMounted } from 'vue';
   import { temp_find_Service_Shuttle  } from './DataConector.js'
 
-  const trackerList_MAP =ref( new Map())
+  // const trackerList_MAP =ref( new Map())
   const template_List_MAP= ref(new Map());
   const places_List_MAP =ref( new Map())
 
@@ -146,30 +146,42 @@
   temp_find_Service_Shuttle("hash").then(respServiceShuuter=>{
     if (respServiceShuuter) {
 
-      serviceShutters_In.value=respServiceShuuter
-      serviceShutters_Out.value=[]
-      serviceShutters_In.value.forEach(elemServiceList=>{
+      try{
 
-        serviceShutters_Out.value.push({
-          id: elemServiceList.id,
-          shuttleId: elemServiceList.shuttleId,
-          clientId: elemServiceList.clientId,
-          userId: elemServiceList.userId,
-          trackerId: elemServiceList.trackerId,
-          statusId: elemServiceList.statusId,
-          trackerLabel: trackerInfo(elemServiceList.trackerId).label,
-          name:templateInfo(elemServiceList.shuttleId).name,
-          origen:placesInfo(templateInfo(elemServiceList.shuttleId).startPlaceId).name,
-          destino:placesInfo(templateInfo(elemServiceList.shuttleId).endPlaceId).name,
-          ultimaConexion: etaInfo(elemServiceList.id).ultimaConexion,
-          porcentaje: etaInfo(elemServiceList.id).porcentaje,
-          tiempoRestante:etaInfo(elemServiceList.id).tiempoRestante,
-          kilometrosRestantes: etaInfo(elemServiceList.id).kilometrosRestantes,
-          horaLLegada: etaInfo(elemServiceList.id).horaLLegada,
-          status: etaInfo(elemServiceList.id).status,
+        serviceShutters_In.value=respServiceShuuter
+        serviceShutters_Out.value=[]
+
+        serviceShutters_In.value.forEach(elemServiceList=>{
+
+          if(elemServiceList.id){
+
+            serviceShutters_Out.value.push({
+              id: elemServiceList.id,
+              shuttleId: elemServiceList.shuttleId,
+              clientId: elemServiceList.clientId,
+              userId: elemServiceList.userId,
+              trackerId: elemServiceList.trackerId,
+              statusId: elemServiceList.statusId,
+              trackerLabel: elemServiceList.trackerId,
+              name:templateInfo(elemServiceList.shuttleId).name,
+              origen:placesInfo(templateInfo(elemServiceList.shuttleId).startPlaceId).name,
+              destino:placesInfo(templateInfo(elemServiceList.shuttleId).endPlaceId).name,
+              ultimaConexion: etaInfo(elemServiceList.id).ultimaConexion,
+              porcentaje: etaInfo(elemServiceList.id).porcentaje,
+              tiempoRestante:etaInfo(elemServiceList.id).tiempoRestante,
+              kilometrosRestantes: etaInfo(elemServiceList.id).kilometrosRestantes,
+              horaLLegada: etaInfo(elemServiceList.id).horaLLegada,
+              status: etaInfo(elemServiceList.id).status,
+            })
+
+          }else{
+            console.log("No existe Elemento alguno")
+          }
         })
+      }catch(err){
+        console.log(err)
+      }
 
-      })
     }else{
       console.log("No se pudo consultar find_Service_Shuttle")
     }
@@ -183,6 +195,8 @@
     try{
 
       if (template_List_MAP.value.get(shuttleId).name) {
+
+        console.log(template_List_MAP.value.get(shuttleId))
 
         return template_List_MAP.value.get(shuttleId)
       }
@@ -203,11 +217,13 @@
         }
     }
 
+
+
   }
 
   //------------------------------------------------
 
-  function trackerInfo(trackerId){
+/*  function trackerInfo(trackerId){
 
     try{
       if (trackerList_MAP.value.get(trackerId).label) {
@@ -226,26 +242,31 @@
     }
 
   }
-
+*/
 //-----------------------------------------------
 
   function placesInfo(placeId){
 
   try{
-
-    if(places_List_MAP.value.get(placeId)){
+    if (places_List_MAP.value.get(placeId).name) {
 
       return places_List_MAP.value.get(placeId)
     }
-
   }catch(error){
     console.log(error)
-    // console.log(`No se Convirtio PlaceId ${PlaceId} (ERROR)`)
-    return placeId+"hoy"
+    return  {
+      id: 2117241,
+      name: placeId,
+      lat: 18.4872049,
+      lng: -69.95793343,
+      radius: 50,
+      address: "C/ Lorenzo Despradel #2, La Castellana, Santo Domingo"
+    }
   }
+
 }
 
-placesInfo(1)
+placesInfo(2)
 
 //------------------------------------------
 
@@ -278,7 +299,7 @@ placesInfo(1)
 
 onMounted(async () => {
 
-  trackerList_MAP.value=incomingData.in_trackers
+  // trackerList_MAP.value=incomingData.in_trackers
   template_List_MAP.value=incomingData.in_templates
   places_List_MAP.value=incomingData.in_places
 

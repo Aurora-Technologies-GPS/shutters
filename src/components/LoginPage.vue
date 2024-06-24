@@ -36,7 +36,7 @@
 
 <script setup>
 	import {ref} from 'vue'
-	import { temp_auth} from './DataConector.js' //auth placeList  , auth
+	import { auth } from './DataConector.js' //auth placeList  , auth
 
 
 let datosUser=ref({username:"", password:""})
@@ -57,57 +57,31 @@ if (window.$cookies.isKey('authorized')){
 
 
 function consultar(){
-
-
-  temp_auth(datosUser.value).then(resAuth=>{
+ 
+  auth(datosUser.value).then(resAuth=>{
 
     if (resAuth.Error) {
       console.log("Clave Incorrecta")
       claveIncorrecta.value=true
     }else{
 
-      console.log("Bienvenido")
-      window.$cookies.set('authorized',datosUser.value)
-      window.$cookies.get('authorized')
+      if (resAuth) {
+        console.log("Bienvenido")
+        window.$cookies.set('authorized',resAuth)
+        console.log(resAuth)
+        //window.$cookies.get('authorized')
+        setTimeout(()=>{
+         window.location.replace("./dashboard");
+       },100)
 
-      setTimeout(()=>{
-     window.location.replace("./dashboard");
-      },100)
 
+      }else{
+        console.log("Error de Respuesta")
+      }
 
     }
 
   })
-
-  // fin temporal
-
-/*auth(datosUser.value).then(result=>{
-
-  console.log(result)
-
-  if (result.Error) {
-    console.log("Clave Incorrecta")
-    claveIncorrecta.value=true
-  
-  }else{  
-
-    if (result) {
-      console.log("Bienvenido")
-      window.$cookies.set('authorized',result)
-      window.$cookies.get('authorized')
-
-      setTimeout(()=>{
-     window.location.replace("./dashboard");
-      },100)
-
-    }else{
-      console.log("No se pudo Conectar")
-    }
-
-  }
-  
-})*/
-
 }
 
 </script>

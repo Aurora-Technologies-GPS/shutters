@@ -42,9 +42,9 @@
 
 						<div class="contenido">
 							<div>ORIGEN:</div>
-							<label>{{get_places_Label(dato.startPlaceId)}}</label>
+							<label>{{`${placesInfo(dato.startPlaceId).name} : ${placesInfo(dato.startPlaceId).address}`}}</label>
 							<div>DESTINO:</div>
-							<label>{{get_places_Label(dato.endPlaceId)}}</label>
+							<label>{{` ${placesInfo(dato.endPlaceId).name} : ${placesInfo(dato.endPlaceId).address}`}}</label>
 						</div>
 						<div class="contenido">
 							<div>SALIDA:</div>
@@ -91,6 +91,7 @@ const view=ref({
 })
 
 const places_List =ref( new Map())
+// const trackers_List =ref( new Map())
 
 let template_In= ref([
 {
@@ -125,31 +126,49 @@ function hideBinding() {
 
  }
 
-
-temp_findTemplates("hash").then(res_templateList=>{
+//----------<<<  temp_findTemplates consult   >>----------
+	temp_findTemplates(window.$cookies.get('authorized').user.hash).then(res_templateList=>{
 
 	if (res_templateList) {
 
+		//res_templateList[0].id
+		try{
+
 			template_In.value=res_templateList
 
+		}catch(err){
+			console.log(err)
+		}
 	}else{
 		console.log("No se pudo Cargar Template List")
 	}
-})
+})//----------<<< FIN  temp_findTemplates consult   >>----------
 
 
-function get_places_Label(placeId){
+
+function placesInfo(placeId){
 
 	try{
+		if (places_List.value.get(placeId).name) {
 
-		const detailsPlace=places_List.value.get(placeId)
-		/*console.log(`se Convirtio PlaceId ${PlaceId} to String`)*/
-		return `${detailsPlace.name} : ${detailsPlace.address}`
-	}catch{
-		// console.log(`No se Convirtio PlaceId ${PlaceId} (ERROR)`)
-		return placeId
+			return places_List.value.get(placeId)
+		}
+	}catch(error){
+		console.log(error)
+		return 	{
+			id: 2117241,
+			name: placeId,
+			lat: 18.4872049,
+			lng: -69.95793343,
+			radius: 50,
+			address: "C/ Lorenzo Despradel #2, La Castellana, Santo Domingo"
+		}
 	}
+
 }
+
+
+
 
 function getTimeAndDate(isoDate){
 	try{
@@ -171,12 +190,14 @@ function bindTracker(template){
 
 const incomingData = defineProps({
   in_places: Object,
+  // in_trackers: Object,
 })
 
 
 onMounted(async () => {
 
 	places_List.value=incomingData.in_places
+	// trackers_List.value=incomingData.in_trackers
 
 })
 

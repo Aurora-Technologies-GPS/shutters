@@ -59,7 +59,7 @@
 
         <div v-if="adding.saved">
 
-          <h1 class="text-center">Guardado Correctamente</h1> 
+          <h1 class="text-center">{{adding.sms}}</h1> 
         </div>
 
 			</form>
@@ -70,7 +70,8 @@
 
 <script setup>
 
-	import { ref, defineProps,defineEmits, onMounted } from 'vue';
+	import { ref, defineProps, defineEmits, onMounted } from 'vue';
+	import { crearTemplate } from './DataConector.js'
 
 
 const adding=ref({
@@ -80,7 +81,12 @@ const adding=ref({
   departureDue:null, //"2024-06-03T22:44
   arrivalDue:null,//"2024-06-03T22:44"
   note:"",
-  saved:false
+  saved:false,
+  sms:"",
+
+  hash: window.$cookies.get('authorized').user.hash,
+  userId: window.$cookies.get('authorized').user.id,
+	clientId: window.$cookies.get('authorized').user.clientId
 })
 
 
@@ -99,12 +105,35 @@ let placesList=ref([
 
 function enviar(){
 
-  console.log(adding.value)
-  adding.value.saved=true
+	if (window.$cookies.isKey('authorized')){
 
-  setTimeout(()=>{
-   window.location.replace("./dashboard");
-  },2000)
+		crearTemplate(adding.value).then(resAddTemplate=>{
+
+			if (resAddTemplate.message) {
+				adding.value.saved=true
+				adding.value.sms=resAddTemplate.message
+
+				console.log(adding.value)
+			}else{
+				adding.value.saved=true
+				adding.value.sms="No se Guardaron Datos"
+
+			}
+
+			setTimeout(()=>{
+				//hideMe()
+			},2000)
+
+		})
+
+
+	}else{
+			adding.value.saved=true
+			adding.value.sms="Logueate Por Favor"
+		setTimeout(()=>{
+		window.location.replace("./");
+		},2000)
+	}
 }
 
 
@@ -126,9 +155,12 @@ onMounted(async () => {
 
 	placesList.value=[]
 
+
+
 	incomingData.in_places.forEach(elemt=>{
 		placesList.value.push(elemt)
 	});
+
 
 })
 

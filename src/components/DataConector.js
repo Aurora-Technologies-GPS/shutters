@@ -12,29 +12,6 @@ export async function placeList(hash) {
     return data
 }
 
-export async function temp_placeList(hash) {
-    const data = {
-        client_id: null,
-        list: [{
-            id: 55,
-            name: "MI CASA ",
-            lat: 18.4872049,
-            lng: -69.95793343,
-            radius: 50,
-            address: "Orquideas, Santo Domingo de Guzmán, Distrito Nacional, República Dominicana, 10132"
-        }, {
-            id: 66,
-            name: "TU CASA ",
-            lat: 18.4872049,
-            lng: -69.95793343,
-            radius: 50,
-            address: "Orquideas, Santo Domingo de Guzmán, Distrito Nacional, República Dominicana, 10132"
-        }]
-    }
-    await console.log(hash)
-    return data
-}
-
 export async function auth(params) {
     let data = []
     await axios.post(api + '/v1/auth/login', params).then(response => {
@@ -43,29 +20,6 @@ export async function auth(params) {
         console.log(error)
         return data = false
     });
-    return data
-}
-
-export async function temp_auth(params) {
-
-  if (params.username== 'admin' && params.password == '1234') {
-
-    return true
-
-  }else{
-
-    return {Error:true}
-
-  }
-}
-
-
-export async function tempLogout(hash) {
-    let temp=hash
-    temp=""
-    await console.log(temp)
-    let data = true
-
     return data
 }
 
@@ -88,40 +42,9 @@ export async function tracker(hash) {
     return data
 }
 
-export async function temp_tracker(hash) {
-    let data = {
-    client_id: null,
-    list: [
-        {
-            id: 0,
-            deviceId: "",
-            model: "",
-            label: "VOLVO",
-            created: "2020-05-21"
-        },
-                {
-            id: 1,
-            deviceId: "",
-            model: "",
-            label: "MAZDA",
-            created: "2020-05-21"
-        },
-                        {
-            id: 3,
-            deviceId: "",
-            model: "",
-            label: "MAZDA",
-            created: "2020-05-21"
-        }
-    ]
-}
-    await console.log(hash)
-
-    return data
-}
 
 
-export async function findShuttle(hash) {
+export async function findTemplates(hash) {
     let data = []
     await axios.get(api + '/v1/shuttle/list/' + hash).then(response => {
         data = response.data
@@ -133,23 +56,23 @@ export async function findShuttle(hash) {
 
 export async function temp_findTemplates(hash) {
     let data = [{
-        id: 33,
+        id: 1,
         clientId: 300310,
         userId: 300310,
         name: "DEIBY LORA LLEVAR JUGO A SU CASA DESPUES ",
-        startPlaceId: 66,
-        endPlaceId: 55,
+        startPlaceId: 2117241,
+        endPlaceId: 2117261,
         departureDue: "2024-06-04T02:44:57Z",
         arrivalDue: "2024-06-04T02:44:57Z",
-        note: " test2 de la texteada"
+        note: "la texteada"
     },
     {
-        id: 34,
+        id: 2,
         clientId: 300310,
         userId: 300310,
         name: "NOEL LORA LLEVAR JUGO A SU CASA DESPUES ",
-        startPlaceId: 66,
-        endPlaceId: 55,
+        startPlaceId: 2117262,
+        endPlaceId: 2117263,
         departureDue: "2024-06-04T02:44:57Z",
         arrivalDue: "2024-06-04T02:44:57Z",
         note: " test2 de la texteada"
@@ -177,10 +100,10 @@ export async function temp_find_Service_Shuttle(hash) {
     data = [
     {
     id: 1,
-    shuttleId: 33,
+    shuttleId: 1,
     clientId: 300310,
     userId: 300310,
-    trackerId: 1,
+    trackerId: 2935572,
     statusId: 1
   }
 
@@ -199,7 +122,7 @@ export async function deleteShuttle(hash, id) {
     });
     return data
 }
-export async function saveShuttle(params) {
+export async function crearTemplate(params) {
     let data = []
     await axios.post(api + '/v1/shuttle/create', params).then(response => {
         data = response.data

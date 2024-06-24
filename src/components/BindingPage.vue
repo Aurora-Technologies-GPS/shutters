@@ -61,7 +61,7 @@
 
 <script setup>
 	import { ref, defineProps, defineEmits, onMounted } from 'vue';
-	import { temp_tracker } from './DataConector.js'
+	import { tracker } from './DataConector.js'
 
 
 let adding=ref({
@@ -87,8 +87,10 @@ let trackersList=ref({
 	]
 })
 
-temp_tracker("hash").then(inTrackersList=>{
+tracker(window.$cookies.get('authorized').user.hash).then(inTrackersList=>{
 	if (inTrackersList) {
+
+		console.log(inTrackersList)
 
 			trackersList.value=inTrackersList
 	}else{
@@ -140,7 +142,7 @@ function enviar(){
   adding.value.saved=true
 
   setTimeout(()=>{
-    window.location.replace("./dashboard");
+    //window.location.replace("./dashboard");
   },2000)
 }
 
