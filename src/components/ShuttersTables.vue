@@ -1,12 +1,12 @@
 <template>
 	<div style=" padding-right: 10px;">
-		<h2 v-if="serviceShutters_Out.length<1"  class="text-center" > No Hay Ningun Shutter</h2>
-			<div  v-for=" (dato, index) in serviceShutters_Out" :key="index" >
+		<h2 v-if="serviceShutters_In.length<1"  class="text-center" > No Hay Ningun Shutter</h2>
+			<div  v-for=" (dato, index) in serviceShutters_In" :key="index" >
 
 
         <div class="card">
          <!--  :class="{ important: dato.important }" -->
-          <div class="card-header" >
+          <div class="card-header"  :style="{background: getColor(dato.statusId)}" style="border-radius: 15px 15px 0px 0px;" >
 
         <button style="float: right; border: none; background: transparent;" data-toggle="dropdown" >
           <i class="bi bi-sliders"></i>
@@ -15,15 +15,15 @@
         <div class="dropdown-menu" >
           <a class="dropdown-item" href="#">Action</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Ocultar Trayecto</a>
+          <a @click="eliminarShutter(dato.id)" class="dropdown-item" href="#">Cancelar Trayecto</a>
         </div>
 
             <div class="header_status">
-              <div><strong>{{ `${dato.name} : ${dato.trackerLabel}` }}</strong></div>
+              <div><strong>{{ `${dato.id} ${dato.name} : ${dato.trackerId}` }}</strong></div>
               <div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
-                    {{dato.ultimaConexion}}
+                    {{dato.created}}
                   </div>
-              <div> {{ dato.status }}
+              <div> {{ dato.statusId }}
                 <i class="ubication bi bi-geo-alt-fill"></i>
               </div>
 
@@ -41,7 +41,7 @@
               <div class=" col-lg-8 col-xl-9 col-md-7 col-sm-8 col-8 "
                 style=" position: relative; margin-top: auto; margin-bottom: auto;">
                 <div class="col-12" style="font-size:14px; color: #bcbab9;">
-                  {{ dato.origen}}
+                  {{ dato.startPlaceId}}
 
                 </div>
 
@@ -49,14 +49,14 @@
                   aria-valuemin="0" aria-valuemax="100">
 
                   <div class="estado d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-                    {{"activo: "+dato.ultimaConexion }}
+                    {{"activo: "+fake.ultimaConexion }}
                   </div>
       
                   <div  class="progress-bar progress-bar-striped progress-bar-animated"
-                    :style="{width:dato.porcentaje+'%'}">{{ dato.porcentaje +"%"}}</div>
+                    :style="{width:fake.porcentaje+'%'}">{{ fake.porcentaje +"%"}}</div>
                 </div>
                 <div class="col-12" style="text-align: right; font-size:14px; color: #bcbab9; ">
-                  {{ dato.destino }}
+                  {{ dato.endPlaceId }}
 
                 </div>
 
@@ -64,20 +64,20 @@
 
               <div class="col header_status">
                 <button type="button" class="btn btn-circle btn-xl d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-                  <span class="tituloBola">{{dato.tiempoRestante}}</span>{{ "Min" }}
+                  <span class="tituloBola">{{fake.tiempoRestante}}</span>{{ "Min" }}
                   <img class="etaBT" src="../assets/etaBola.png">
                 </button>
               <!--   style="border-right:dashed #bcbab9; padding-right: 20px;" -->
                 <div class="text-center" >
                   <span style="font-size:14px; color: #bcbab9;">Restante</span>
                   <br>
-                  <span>{{ dato.kilometrosRestantes + " KM" }} </span>
+                  <span>{{ fake.kilometrosRestantes + " KM" }} </span>
                 </div>
 
                 <div class="text-center">
                   <span style="font-size:14px; color: #bcbab9;">llegada </span>
                   <br>
-                  <span>{{ dato.horaLLegada }}</span>
+                  <span>{{ fake.horaLLegada }}</span>
                 </div>
 
 
@@ -103,75 +103,83 @@
 <script setup>
 
   import { ref, defineProps, onMounted } from 'vue';
-  import { temp_find_Service_Shuttle  } from './DataConector.js'
+  import { find_Service_Shuttle, deleteShutter } from './DataConector.js'
+  import { getColor } from './utils.js'
 
   // const trackerList_MAP =ref( new Map())
   const template_List_MAP= ref(new Map());
   const places_List_MAP =ref( new Map())
 
+  let fake={
+    porcentaje:50,
+    ultimaConexion:new Date().toLocaleString(),
+    tiempoRestante:50,
+    kilometrosRestantes:60,
+    horaLLegada:new Date().toLocaleTimeString()
 
-  let serviceShutters_In= ref([{
-    id: null,
-    shuttleId: null,
-    clientId: null,
-    userId: null,
-    trackerId: null,
-    statusId: null
+    // schDepTime: "2024-06-03T22:44:00.000-0400",
+    // schArrTime: "2024-06-03T22:44:00.000-0400",
+    //created: "2024-06-26T09:32:10.893-0400"
+    //trackerId
   }
+
+
+         
+
+
+
+  let serviceShutters_In= ref([/*{
+    id: 1,
+    name: "Pureba",
+    shuttleTemplateId: 1,
+    clientId: 300310,
+    userId: 300310,
+    trackerId: 2935572,
+    schDepTime: "2024-06-03T22:44:00.000-0400",
+    schArrTime: "2024-06-03T22:44:00.000-0400",
+    startPlaceId: 2117241,
+    endPlaceId: 2117261,
+    statusId: 1,
+    created: "2024-06-26T09:32:10.893-0400"
+  }*/
   ])
 
+function eliminarShutter(id){
+  deleteShutter(window.$cookies.get('authorized').user.hash,id).then(respDelete=>{
 
-  let serviceShutters_Out= ref([{
+    console.log(respDelete)
+  })
 
-    id: null,
-    shuttleId: null,
-    clientId: null,
-    userId: null,
-    trackerId: null,
-    statusId: null,
-    trackerLabel: "trackerInfo(trackerId)",
-    name:"templateInfo(shuttleId).name",
-    origen:"templateInfo(shuttleId).startPlaceId",
-    destino:"templateInfo(shuttleId).destino",
-    ultimaConexion: etaInfo("id").ultimaConexion,
-    porcentaje: etaInfo("id").porcentaje,
-    tiempoRestante:etaInfo("id").tiempoRestante,
-    kilometrosRestantes: etaInfo("id").kilometrosRestantes,
-    horaLLegada: etaInfo("id").horaLLegada,
-    status: etaInfo("id").status,
-  }
-  ])
+}
 
   //------------------serviceShutters_In-------------------
-  temp_find_Service_Shuttle("hash").then(respServiceShuuter=>{
+function consultarServicesList(){
+
+  find_Service_Shuttle(window.$cookies.get('authorized').user.hash).then(respServiceShuuter=>{
+
     if (respServiceShuuter) {
 
       try{
+        serviceShutters_In.value=[]
 
-        serviceShutters_In.value=respServiceShuuter
-        serviceShutters_Out.value=[]
-
-        serviceShutters_In.value.forEach(elemServiceList=>{
+        respServiceShuuter.forEach(elemServiceList=>{
 
           if(elemServiceList.id){
 
-            serviceShutters_Out.value.push({
+            serviceShutters_In.value.push({
+
               id: elemServiceList.id,
-              shuttleId: elemServiceList.shuttleId,
+              shuttleTemplateId: elemServiceList.shuttleTemplateId,
               clientId: elemServiceList.clientId,
               userId: elemServiceList.userId,
               trackerId: elemServiceList.trackerId,
+              name: elemServiceList.name,
+              schDepTime: elemServiceList.schDepTime,
+              schArrTime: elemServiceList.schArrTime,
+              startPlaceId: elemServiceList.startPlaceId,
+              endPlaceId: elemServiceList.endPlaceId,
               statusId: elemServiceList.statusId,
-              trackerLabel: elemServiceList.trackerId,
-              name:templateInfo(elemServiceList.shuttleId).name,
-              origen:placesInfo(templateInfo(elemServiceList.shuttleId).startPlaceId).name,
-              destino:placesInfo(templateInfo(elemServiceList.shuttleId).endPlaceId).name,
-              ultimaConexion: etaInfo(elemServiceList.id).ultimaConexion,
-              porcentaje: etaInfo(elemServiceList.id).porcentaje,
-              tiempoRestante:etaInfo(elemServiceList.id).tiempoRestante,
-              kilometrosRestantes: etaInfo(elemServiceList.id).kilometrosRestantes,
-              horaLLegada: etaInfo(elemServiceList.id).horaLLegada,
-              status: etaInfo(elemServiceList.id).status,
+              created: elemServiceList.created,
             })
 
           }else{
@@ -188,9 +196,13 @@
 
 
   })
+
+
+}
+
   //------------------ FIN serviceShutters_In-------------------
 
-  function templateInfo(shuttleId){
+  /*function templateInfo(shuttleId){
 
     try{
 
@@ -219,7 +231,7 @@
 
 
 
-  }
+  }*/
 
   //------------------------------------------------
 
@@ -245,7 +257,7 @@
 */
 //-----------------------------------------------
 
-  function placesInfo(placeId){
+/*  function placesInfo(placeId){
 
   try{
     if (places_List_MAP.value.get(placeId).name) {
@@ -265,12 +277,12 @@
   }
 
 }
+*/
 
-placesInfo(2)
 
 //------------------------------------------
 
-  function etaInfo(ShutterServiceId){
+/*  function etaInfo(ShutterServiceId){
     let temp=ShutterServiceId
     temp= " "
     console.log(temp)
@@ -288,7 +300,7 @@ placesInfo(2)
     }catch{
       return ShutterServiceId
     }
-  }
+  }*/
 
   const incomingData = defineProps({
   in_trackers: Object,
@@ -302,6 +314,8 @@ onMounted(async () => {
   // trackerList_MAP.value=incomingData.in_trackers
   template_List_MAP.value=incomingData.in_templates
   places_List_MAP.value=incomingData.in_places
+
+  consultarServicesList()
 
 })
 

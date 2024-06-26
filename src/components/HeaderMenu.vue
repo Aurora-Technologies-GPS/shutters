@@ -11,35 +11,50 @@
 
 						<div class="contCircle">
 							<div>
-								<i class="bi bi-circle-fill">
-									<span>ENTREGADOS</span>
+								<i :style="{color: getColor(1)}" class="bi bi-circle-fill">
+									<span>PENDING</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i class="bi bi-circle-fill"> 
-									<span>EN TRANSITO</span>
+								<i :style="{color: getColor(2)}" class="bi bi-circle-fill"> 
+									<span>PRE CHECKING</span>
+								</i>
+								<br>
+								<div class="espacio"></div>
+								<i :style="{color: getColor(7)}" class="bi bi-circle-fill"> 
+									<span>DONE LATE</span>
 								</i>
 							</div>
 
 							<div>
-								<i class="bi bi-circle-fill">
-									<span>FUERA DE SERVICIO</span>
+								<i :style="{color: getColor(3)}" class="bi bi-circle-fill">
+									<span>LATE CHECKING</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i class="bi bi-circle-fill">
-									<span>EXPIRADOS</span>								
+								<i :style="{color: getColor(4)}" class="bi bi-circle-fill">
+									<span>WARNING</span>								
+								</i>
+								<br>
+								<div class="espacio"></div>
+								<i :style="{color: getColor(8)}" class="bi bi-circle-fill">
+									<span>CANCELED</span>								
 								</i>
 							</div>
 
 							<div>
-								<i class="bi bi-circle-fill">
-									<span>PROGRAMADOS</span>
+								<i :style="{color: getColor(5)}" class="bi bi-circle-fill">
+									<span>OVERDUE</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i class="bi bi-circle-fill">
-									<span>TARDIOS</span>
+								<i :style="{color: getColor(6)}" class="bi bi-circle-fill">
+									<span>DONE IN TIME</span>
+								</i>
+								<br>
+								<div class="espacio"></div>
+								<i :style="{color: getColor(9)}" class="bi bi-circle-fill">
+									<span>EXPIRED</span>
 								</i>
 							</div>
 
@@ -70,6 +85,7 @@
 </template>
 
 <script setup>
+	import { getColor } from './utils.js'
 
 </script>
 

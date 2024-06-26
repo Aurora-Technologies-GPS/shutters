@@ -102,12 +102,12 @@
 						<div class="title_views">SHUTTERS</div>
 						<div class="subtitle">TIEMPO Y DISTANCIAS ESTIMADAS DE LLEGADA</div>
 						<div class="listContainer">
-							<ShuttersTables :in_places="places_List" :in_templates="template_List"  />
+							<ShuttersTables :in_places="places_List" />
 						</div>
 					</div>
 				</div>
 <!-- :in_trackers="trackers_List" -->
-				<ShuttersTables :in_places="places_List" :in_templates="template_List"  v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
+				<ShuttersTables :in_places="places_List" v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
 
 				<TemplatesPages v-if="view.template" :in_places="places_List" />
 
@@ -128,7 +128,7 @@
 
 			<div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block mobilebody">
 
-				<ShuttersTables v-if="view.mobiShutters" :in_places="places_List" :in_templates="template_List" />
+				<ShuttersTables v-if="view.mobiShutters" :in_places="places_List" />
 <!-- 				<TemplatesPages v-if="view.mobiTemplates" :in_places="places_List" class="mobileFormContainer" /> -->
 				<TemplatesPages v-if="view.mobiAsignar" :in_places="places_List" class="mobileFormContainer" />
 				<NuevoTemplate  v-if="view.mobiAddTemplate"  :in_places="places_List" class="mobileFormContainer" />
@@ -147,7 +147,7 @@
 	import NuevoTemplate from './NuevoTemplate.vue'
 	import TemplatesPages from './TemplatesPages.vue'
 	import ReportesPage from './ReportesPage.vue'
-	import { placeList , temp_findTemplates, logout } from './DataConector.js' 
+	import { placeList , logout } from './DataConector.js' 
 
 
 
@@ -171,7 +171,6 @@
 
 	const places_List =ref( new Map());
 /*	const trackers_List =ref( new Map());*/
-	const template_List= ref(new Map());
 
 	function hideAddTemplate(){
 		view.value.showingAddTemplate=false
@@ -191,34 +190,6 @@
 			console.log("ocurrio un Error al cargar places")
 		}
 	});//----------<<< FIN  trackers consult   >>----------*/
-
-
-
-//----------<<<  temp_findTemplates consult   >>----------
-	temp_findTemplates(window.$cookies.get('authorized').user.hash).then(res_templateList=>{
-
-	if (res_templateList) {
-
-		try{
-
-			res_templateList.forEach(elem_template=>{
-
-				if (elem_template.id) {
-					template_List.value.set(elem_template.id, elem_template)
-				}else{
-					console.log("No existe elemento alguno")
-				}
-			})
-
-		}
-		catch(errr){
-			console.log(errr)
-		}
-	}else{
-		console.log("No se pudo Cargar Template List")
-	}
-})//----------<<< FIN  temp_findTemplates consult   >>----------
-
 
 //----------<<<  temp_placeList consult   >>----------
 	placeList(window.$cookies.get('authorized').user.hash).then(respPlaces=>{

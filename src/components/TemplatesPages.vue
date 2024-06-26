@@ -2,13 +2,20 @@
 
 	<div>
 
+		<div v-if="view.deleted" class="popEliminado text-center">
+			<h3>{{view.deletedsms}}</h3>
+		</div>
+
 <!--  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none" -->
-	<div v-if="view.showingBinding" >
+	<div v-if="view.showingBinding">
 
 		<BindingPage :in_places="places_List" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
 	</div>
 
-	<div v-show="!view.showingBinding"  v-for=" (dato, index) in template_In" :key="index"  class="containerTemplates">
+
+	<h3 v-if="template_In.length<1"  class="text-center" > NO HAY NINGUN TEMPLANTE</h3>
+
+	<div v-show="!view.showingBinding"  v-for=" (dato, index) in template_In" :key="index">
 		<div class="rows">
 			<div class="row">
 				<div class="col-md-5">
@@ -30,7 +37,7 @@
 						<div style="height: 20px;">
 							
 						</div>
-						<div class="title_temp nota">NOTA: <span>{{dato.note}}</span></div>
+<!-- 						<div class="title_temp nota">NOTA: <span>{{dato.note}}</span></div> -->
 							
 						</div>
 					</div>					
@@ -50,7 +57,7 @@
 							<div>SALIDA:</div>
 							<label>{{getTimeAndDate(dato.departureDue)}}</label>
 							<div>LLEGADA:</div>
-							<label>{{getTimeAndDate(dato.departureDue)}}</label>
+							<label>{{getTimeAndDate(dato.arrivalDue)}}</label>
 						</div>
 					</div>
 
@@ -61,9 +68,9 @@
         </button>
 
         <div class="text-center dropdown-menu" >
-          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Accion</a>
           <div class="dropdown-divider"></div>
-          <a  class="dropdown-item" href="#">Ocultar Trayecto</a>
+          <a @click="eliminarTemplate(dato.id)" class="dropdown-item" href="#">Eliminar Template</a>
         </div>
 							
 						</div>
@@ -84,10 +91,12 @@
 
 import BindingPage from './BindingPage.vue'
 import { ref, defineProps, onMounted } from 'vue';
-import { temp_findTemplates  } from './DataConector.js' 
+import { findTemplates, deleteTemplate  } from './DataConector.js' 
 
 const view=ref({
-	showingBinding:false
+	showingBinding:false,
+	deleted:false,
+	deletedsms:""
 })
 
 const places_List =ref( new Map())
@@ -103,7 +112,9 @@ let template_In= ref([
 	endPlaceId:null,
 	departureDue: "2020-06-04T02:44:57Z",
 	arrivalDue: "2020-06-04T02:44:57Z",
-	note:""
+	estimatedTime:null,
+	estimateDistance:null
+	// note:""
 }
 ])
 
@@ -116,7 +127,10 @@ let template_Out= ref([{
 	endPlaceId:2117261,
 	departureDue: "",
 	arrivalDue: "",
-	note:""
+	estimatedTime:null,
+	estimateDistance:null
+
+	// note:""
 }
 ])
 
@@ -126,13 +140,40 @@ function hideBinding() {
 
  }
 
+function eliminarTemplate(id){
+	deleteTemplate(window.$cookies.get('authorized').user.hash, id).then(resdelete=>{
+
+		if (resdelete) {
+				view.value.deleted=true
+				view.value.deletedsms=resdelete
+				consultarTemplates()
+
+		}else{
+				view.value.deleted=true
+				view.value.deletedsms="No se pudo Eliminar"
+
+			}
+
+			setTimeout(()=>{
+				
+				view.value.deleted=false
+				view.value.deletedsms=""
+			},2000)
+	})
+}
+
 //----------<<<  temp_findTemplates consult   >>----------
-	temp_findTemplates(window.$cookies.get('authorized').user.hash).then(res_templateList=>{
+
+function consultarTemplates(){
+
+	findTemplates(window.$cookies.get('authorized').user.hash).then(res_templateList=>{
 
 	if (res_templateList) {
 
 		//res_templateList[0].id
 		try{
+
+			console.log(res_templateList)
 
 			template_In.value=res_templateList
 
@@ -142,7 +183,9 @@ function hideBinding() {
 	}else{
 		console.log("No se pudo Cargar Template List")
 	}
-})//----------<<< FIN  temp_findTemplates consult   >>----------
+})
+
+}//----------<<< FIN  temp_findTemplates consult   >>----------
 
 
 
@@ -174,8 +217,13 @@ function getTimeAndDate(isoDate){
 	try{
 		// console.log(`se Convirtio isoDate ${isoDate} to Date`)
 
-		const dateOut=new Date(isoDate)
-		return dateOut.toLocaleString()
+		let dateOut=new Date(isoDate).toLocaleString()
+
+		if (dateOut=='Invalid Date') {
+			dateOut= 'dd/mm/aaaa --:--'
+		}
+
+		return dateOut
 
 	}catch{
 		// console.log(`NO se Convirtio isoDate ${isoDate}`)
@@ -197,6 +245,7 @@ const incomingData = defineProps({
 onMounted(async () => {
 
 	places_List.value=incomingData.in_places
+	consultarTemplates()
 	// trackers_List.value=incomingData.in_trackers
 
 })
@@ -218,11 +267,24 @@ onMounted(async () => {
 	justify-content: space-around;
 
 }
-	.containerTemplates{
-		width: 100%;
-		padding-top: 10px;
 
-	}
+.popEliminado {
+  /* background-color: #1e1f24; */
+  background-color: white;
+  position: absolute;
+  /* color: white; */
+  color: black;
+  width: 30%;
+  min-height: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 30%;
+  padding: 50px;
+  border-radius: 15px 15px 15px 15px;
+  z-index: 2;
+  box-shadow: rgba(0, 0, 0, 0.49) 0px 0px 30px 10px;
+}
+<
 
 	.title_text{
 		font-weight: 710;
@@ -233,12 +295,13 @@ onMounted(async () => {
 
 	.iconoContainerTitle{
 		padding: 20px;
+		padding-top: 10px !important;
 		cursor: pointer;
 	}
 
 
 	.contRowTitle i{
-	font-size: 45px;
+	font-size: 40px;
 	color: #283469;
 	}
 
@@ -275,6 +338,7 @@ onMounted(async () => {
 	.rows{
 		background: white;
 		padding: 5px;
+		margin-top: 10px;
 		border-radius: 10px 10px 10px 10px;
 	}
 

@@ -112,8 +112,6 @@ function enviar(){
 			if (resAddTemplate.message) {
 				adding.value.saved=true
 				adding.value.sms=resAddTemplate.message
-
-				console.log(adding.value)
 			}else{
 				adding.value.saved=true
 				adding.value.sms="No se Guardaron Datos"
@@ -121,7 +119,7 @@ function enviar(){
 			}
 
 			setTimeout(()=>{
-				//hideMe()
+				hideMe()
 			},2000)
 
 		})

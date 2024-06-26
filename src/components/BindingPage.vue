@@ -24,19 +24,19 @@
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="inputSalida">TIEMPO DE SALIDA</label>
-						<input v-model="adding.departureDue" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
+						<input v-model="adding.schDepTime" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
 					</div>
 
 					<div class="form-group col-md-6">
 						<label for="inputLlegada">TIEMPO DE LLEGADA</label>
-						<input  v-model="adding.arrivalDue" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
+						<input  v-model="adding.schArrTime" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label for="name">Dispositivo</label>
 
-						<select v-model="adding.tracker_id" id="inputTracker" class="form-control" required>
+						<select v-model="adding.trackerId" id="inputTracker" class="form-control" required>
 							<option :value="track.id" v-for=" (track, index) in trackersList.list" :key="index">
 								{{track.label}}
 							</option>
@@ -45,12 +45,12 @@
 				</div>
 
 				<div class="text-center mb-1">
-					<button type="submit" >ASIGNAR</button>
+					<button class="Disabled" type="submit" >ASIGNAR</button>
 				</div>
 
         <div v-if="adding.saved">
 
-          <h1 class="text-center">Guardado Correctamente</h1> 
+          <h1 class="text-center">{{adding.sms}}</h1> 
         </div>
 
 			</form>
@@ -61,17 +61,19 @@
 
 <script setup>
 	import { ref, defineProps, defineEmits, onMounted } from 'vue';
-	import { tracker } from './DataConector.js'
-
+	import { tracker, crearServiceShuttle } from './DataConector.js'
 
 let adding=ref({
+	hash: window.$cookies.get('authorized').user.hash,
   name:"",
+  shuttleTemplateId:null,
+  trackerId:null,
   startPlaceId:null,
-  endPlaceId:null,
-  departureDue:getTimeAndDate("2020-06-04T02:44:57Z"),
-  arrivalDue:getTimeAndDate("2020-06-04T02:44:57Z"),
-  tracker_id:null,
-  saved:false
+	endPlaceId:null,
+  schDepTime: getTimeAndDate("2020-06-04T02:44:57Z"),
+	schArrTime: getTimeAndDate("2020-06-04T02:44:57Z"),
+  saved:false,
+  sms:" "
 })
 
 let trackersList=ref({
@@ -138,12 +140,26 @@ try{
 
 function enviar(){
 
-  console.log(adding.value)
-  adding.value.saved=true
+	crearServiceShuttle(adding.value).then(respAddServiceShutter=>{
 
-  setTimeout(()=>{
-    //window.location.replace("./dashboard");
-  },2000)
+		console.log(respAddServiceShutter)
+
+
+		if (respAddServiceShutter) {
+			adding.value.saved=true
+			adding.value.sms=respAddServiceShutter
+
+			}else{
+				adding.value.saved=true
+				adding.value.sms="No se Guardaron Datos"
+
+			}
+
+			setTimeout(()=>{
+				adding.value.saved=false
+				adding.value.sms=""
+			},2000)
+	})
 }
 
 function hideMe(){
@@ -160,11 +176,12 @@ const outGoingData = defineEmits(
 
 
 onMounted(async () => {
+	adding.value.shuttleTemplateId=incomingData.in_template.id
 	adding.value.name=incomingData.in_template.name
 	adding.value.startPlaceId=incomingData.in_template.startPlaceId
 	adding.value.endPlaceId=incomingData.in_template.endPlaceId
-	adding.value.departureDue=getTimeAndDate(incomingData.in_template.departureDue)
-	adding.value.arrivalDue=getTimeAndDate(incomingData.in_template.arrivalDue)
+	adding.value.schDepTime=getTimeAndDate(incomingData.in_template.departureDue)
+	adding.value.schArrTime=getTimeAndDate(incomingData.in_template.arrivalDue)
 
 	places_List.value=incomingData.in_places
 

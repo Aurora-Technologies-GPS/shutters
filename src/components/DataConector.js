@@ -46,7 +46,7 @@ export async function tracker(hash) {
 
 export async function findTemplates(hash) {
     let data = []
-    await axios.get(api + '/v1/shuttle/list/' + hash).then(response => {
+    await axios.get(api + '/v1/shuttle_template/list/' + hash).then(response => {
         data = response.data
     }).catch(error => {
         console.log(error)
@@ -54,33 +54,7 @@ export async function findTemplates(hash) {
     return data
 }
 
-export async function temp_findTemplates(hash) {
-    let data = [{
-        id: 1,
-        clientId: 300310,
-        userId: 300310,
-        name: "DEIBY LORA LLEVAR JUGO A SU CASA DESPUES ",
-        startPlaceId: 2117241,
-        endPlaceId: 2117261,
-        departureDue: "2024-06-04T02:44:57Z",
-        arrivalDue: "2024-06-04T02:44:57Z",
-        note: "la texteada"
-    },
-    {
-        id: 2,
-        clientId: 300310,
-        userId: 300310,
-        name: "NOEL LORA LLEVAR JUGO A SU CASA DESPUES ",
-        startPlaceId: 2117262,
-        endPlaceId: 2117263,
-        departureDue: "2024-06-04T02:44:57Z",
-        arrivalDue: "2024-06-04T02:44:57Z",
-        note: " test2 de la texteada"
-    }]
 
-    await console.log(hash)
-    return data
-}
 
 export async function find_Service_Shuttle(hash) {
     let data = []
@@ -92,30 +66,10 @@ export async function find_Service_Shuttle(hash) {
     return data
 }
 
-export async function temp_find_Service_Shuttle(hash) {
-    let data
-
-    await console.log(hash);
-
-    data = [
-    {
-    id: 1,
-    shuttleId: 1,
-    clientId: 300310,
-    userId: 300310,
-    trackerId: 2935572,
-    statusId: 1
-  }
-
-  ]
- 
-    return data
-}
-
-export async function deleteShuttle(hash, id) {
+export async function deleteTemplate(hash, id) {
     let data = []
     const ids = `?ids=${id}`
-    await axios.delete(api + `/v1/shuttle/delete/${hash}${ids}`).then(response => {
+    await axios.delete(api + `/v1/shuttle_template/delete/${hash}${ids}`).then(response => {
         data = response.data
     }).catch(error => {
         console.log(error)
@@ -124,17 +78,27 @@ export async function deleteShuttle(hash, id) {
 }
 export async function crearTemplate(params) {
     let data = []
-    await axios.post(api + '/v1/shuttle/create', params).then(response => {
+    await axios.post(api + '/v1/shuttle_template/create', params).then(response => {
         data = response.data
     }).catch(error => {
         console.log(error)
     });
     return data
 }
-export async function saveShuttleService(params) {
+export async function crearServiceShuttle(params) {
     let data
     console.log(params)
     await axios.post(api + '/v1/shuttle_service/create', params).then(response => {
+        data = response.data
+    }).catch(error => {
+        console.log(error)
+    });
+    return data
+}
+
+export async function deleteShutter(hash, id) {
+    let data = []
+    await axios.patch(api + `/v1/shuttle_service/cancel/${hash}/${id}`).then(response => {
         data = response.data
     }).catch(error => {
         console.log(error)
