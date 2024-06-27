@@ -1,49 +1,51 @@
-export function getColor(statusId){
+export function getStatus(statusId){
 
     switch (statusId) {
 
   case 1:
-      return '#e0e0e0' // pending 
+      return { label:'PENDING', color:'#e0e0e0' } 
       //El servicio de Shuttle no ha iniciado o esta a mas de 15 minutos de iniciar. (gris)          
 
   case 2: 
-     return 'grey' // pre_checkin  
+     return  { label:'PRE CHECKING', color:'grey' }  
      //15 minutos antes del tiempo de inicio si esta configurado. (gris parpadeando)
 
   case 3: 
-    return 'pink' //late_checkin
+    return  { label:'LATE CHECKING', color:'pink' } 
     //Si llega el tiempo de inicio del Shuttle y aun no llega al punto de inicio. (rosado)
 
   case 4:
-    return 'green' //IN_TIME
+    return  { label:'IN_TIME', color: 'green' } 
      //Si ya arranco el Shuttle y esta tiempo para su destino. (verde)
 
   case 5:
-    return 'yellow' //warning
+    return  { label:'WARNING', color: 'yellow' }  
      // Si ya arranco el Shuttle pero esta junto +/- ajustado al tiempo de llegada. (amarillo)
 
   case 6:
-    return 'orange' //overdue
+    return { label:'OVERDUE', color: 'orange' }   
      //Si ya arranco el Shuttle, pero esta por encima del 10% del tiempo de llegada. (naranja)
 
   case 7:
-    return 'green' //'done_in_time' 
+    return { label:'DONE IN TIME', color: 'green' } 
      // Si fue completado durante el tiempo establecido. (verde con cotejo)
   
   case 8:
-    return 'red' //'done_late' 
+    return { label:'DONE LATE', color: 'red' }  
      //si fue completado luego del tiempo establecido. (rojo con cotejo)
 
   case 9:
-    return 'grey' //'canceled' 
+    return { label:'CANCELED', color: 'grey' }  
       //Si este fue cancelado por el usuario. (gris con icono bloqueo)
 
   case 10:
-    return 'red' //'expired' 
+    return { label:'EXPIRED', color: 'red' }  
       //Si el Shuttle no fue completado y sobre paso el tiempo limite por 6 horas. (rojo con icono de X)
 
   default: 
-    return 'grey' //in_time
+    return  { label:'IN_TIME', color: 'green' } 
       //Si ya arranco el Shuttle y esta tiempo para su destino. (verde)
   }
 }
+
+

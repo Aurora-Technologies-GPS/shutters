@@ -335,17 +335,22 @@
 	function salir(){
 		try{
 			logout(window.$cookies.get('authorized').user.hash).then(res_logout=>{
+
 				if (res_logout) {
 					if(res_logout.success){
-						console.log(res_logout)  
-						window.$cookies.remove('authorized') 
-						window.location.replace("./");
+						console.log(res_logout)
 					}else{
 						console.log("NO SE PUDO DESLOGUEAR")
 					}
 				}else{
 					console.log("No se Pudo hacer Logout")
 				}
+
+			setTimeout(()=>{
+				window.$cookies.remove('authorized') 
+				window.location.replace("./");
+			},2000)
+
 			})
 		}catch(error){
 			console.log(error)

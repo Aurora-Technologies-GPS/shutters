@@ -70,7 +70,7 @@ let adding=ref({
   trackerId:null,
   startPlaceId:null,
 	endPlaceId:null,
-  schDepTime: getTimeAndDate("2020-06-04T02:44:57Z"),
+  schDepTime: getTimeAndDate("2020-12-09T02:44:57Z"),
 	schArrTime: getTimeAndDate("2020-06-04T02:44:57Z"),
   saved:false,
   sms:" "
@@ -121,17 +121,26 @@ function get_places_Label(placeId){
 function getTimeAndDate(isoDate){
 
 try{
-		// console.log(`se Convirtio isoDate ${isoDate} to Date`)
 
-		const dateOut=new Date(isoDate)
+	let dateOut=new Date(isoDate)
+	
+	dateOut=dateOut.toLocaleString().split(",")
+	
+	const fecha=dateOut[0].split("/")
+	const tiempo=dateOut[1].substr(1,5)
 
-		return dateOut.toISOString().split('.')[0].substr(0,dateOut.toISOString().split('.')[0].length-3)
+	const espacio1 =  fecha[1] < 9 ? '-0' : '-'
+	const espacio2 =  fecha[0] < 9 ? '-0' : '-'
+
+
+	dateOut=`${fecha[2]}${espacio1}${fecha[1]}${espacio2}${fecha[0]}T${tiempo}`
+
+	return dateOut
 
 	}catch{
 		// console.log(`NO se Convirtio isoDate ${isoDate}`)
 		return null
 	} 
-
 
 }
 

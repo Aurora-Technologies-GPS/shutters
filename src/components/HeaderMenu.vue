@@ -11,50 +11,50 @@
 
 						<div class="contCircle">
 							<div>
-								<i :style="{color: getColor(1)}" class="bi bi-circle-fill">
-									<span>PENDING</span>
+								<i :style="{color: getStatus(1).color}" class="bi bi-circle-fill">
+									<span>{{getStatus(1).label}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i :style="{color: getColor(2)}" class="bi bi-circle-fill"> 
-									<span>PRE CHECKING</span>
+								<i :style="{color: getStatus(2).color}" class="bi bi-circle-fill"> 
+									<span>{{getStatus(2).label}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i :style="{color: getColor(7)}" class="bi bi-circle-fill"> 
-									<span>DONE LATE</span>
+								<i :style="{color: getStatus(3).color}" class="bi bi-circle-fill"> 
+									<span>{{getStatus(3).label}}</span>
 								</i>
 							</div>
 
 							<div>
-								<i :style="{color: getColor(3)}" class="bi bi-circle-fill">
-									<span>LATE CHECKING</span>
+								<i :style="{color: getStatus(4).color}" class="bi bi-circle-fill">
+									<span>{{getStatus(4).label}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i :style="{color: getColor(4)}" class="bi bi-circle-fill">
-									<span>WARNING</span>								
+								<i :style="{color: getStatus(5).color}" class="bi bi-circle-fill">
+									<span>{{getStatus(5).label}}</span>								
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i :style="{color: getColor(8)}" class="bi bi-circle-fill">
-									<span>CANCELED</span>								
+								<i :style="{color: getStatus(6).color}" class="bi bi-circle-fill">
+									<span>{{getStatus(6).label}}</span>								
 								</i>
 							</div>
 
 							<div>
-								<i :style="{color: getColor(5)}" class="bi bi-circle-fill">
-									<span>OVERDUE</span>
+								<i :style="{color: getStatus(7).color}" class="bi bi-circle-fill">
+									<span>{{getStatus(7).label}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i :style="{color: getColor(6)}" class="bi bi-circle-fill">
-									<span>DONE IN TIME</span>
+								<i :style="{color: getStatus(8).color}" class="bi bi-circle-fill">
+									<span>{{getStatus(8).label}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
-								<i :style="{color: getColor(9)}" class="bi bi-circle-fill">
-									<span>EXPIRED</span>
+								<i :style="{color: getStatus(9).color}" class="bi bi-circle-fill">
+									<span>{{getStatus(9).label}}</span>
 								</i>
 							</div>
 
@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-	import { getColor } from './utils.js'
+	import { getStatus } from './utils.js'
 
 </script>
 

@@ -1,12 +1,23 @@
 <template>
 	<div style=" padding-right: 10px;">
+
+    <div v-if="view.deleted" class="popEliminado text-center">
+      <h3>{{view.deletedsms}}</h3>
+    </div>
+
 		<h2 v-if="serviceShutters_In.length<1"  class="text-center" > No Hay Ningun Shutter</h2>
-			<div  v-for=" (dato, index) in serviceShutters_In" :key="index" >
+
+      <div v-if="serviceShutters_In[0].ss.id == null" class="text-center">
+        {{view.loading}}        
+      </div>
+
+
+			<div v-else v-for=" (dato, index) in serviceShutters_In" :key="index" >
 
 
         <div class="card">
          <!--  :class="{ important: dato.important }" -->
-          <div class="card-header"  :style="{background: getColor(dato.statusId)}" style="border-radius: 15px 15px 0px 0px;" >
+          <div class="card-header"  :style="{background: getStatus(dato.ss.statusId).color}" style="border-radius: 15px 15px 0px 0px;" >
 
         <button style="float: right; border: none; background: transparent;" data-toggle="dropdown" >
           <i class="bi bi-sliders"></i>
@@ -15,15 +26,15 @@
         <div class="dropdown-menu" >
           <a class="dropdown-item" href="#">Action</a>
           <div class="dropdown-divider"></div>
-          <a @click="eliminarShutter(dato.id)" class="dropdown-item" href="#">Cancelar Trayecto</a>
+          <a @click="eliminarShutter(dato.ss.id)" class="dropdown-item" href="#">Cancelar Trayecto</a>
         </div>
 
             <div class="header_status">
-              <div><strong>{{ `${dato.id} ${dato.name} : ${dato.trackerId}` }}</strong></div>
+              <div><strong>{{ `${dato.ss.name} : ${dato.ss.trackerId}` }}</strong></div>
               <div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block">
-                    {{dato.created}}
+                    {{dato.ss.created}}
                   </div>
-              <div> {{ dato.statusId }}
+              <div> {{ getStatus(dato.ss.statusId).label }}
                 <i class="ubication bi bi-geo-alt-fill"></i>
               </div>
 
@@ -41,7 +52,7 @@
               <div class=" col-lg-8 col-xl-9 col-md-7 col-sm-8 col-8 "
                 style=" position: relative; margin-top: auto; margin-bottom: auto;">
                 <div class="col-12" style="font-size:14px; color: #bcbab9;">
-                  {{ dato.startPlaceId}}
+                  {{ dato.startPlace.name}}
 
                 </div>
 
@@ -56,7 +67,7 @@
                     :style="{width:fake.porcentaje+'%'}">{{ fake.porcentaje +"%"}}</div>
                 </div>
                 <div class="col-12" style="text-align: right; font-size:14px; color: #bcbab9; ">
-                  {{ dato.endPlaceId }}
+                  {{ dato.endPlace.name }}
 
                 </div>
 
@@ -93,6 +104,7 @@
       </div>
 
 
+
  
 
 
@@ -104,7 +116,7 @@
 
   import { ref, defineProps, onMounted } from 'vue';
   import { find_Service_Shuttle, deleteShutter } from './DataConector.js'
-  import { getColor } from './utils.js'
+  import { getStatus } from './utils.js'
 
   // const trackerList_MAP =ref( new Map())
   const template_List_MAP= ref(new Map());
@@ -123,31 +135,71 @@
     //trackerId
   }
 
+const view=ref({
+  deleted:false,
+  deletedsms:"",
+  loading:"cargando"
+})
+
+
 
          
 
 
 
-  let serviceShutters_In= ref([/*{
-    id: 1,
-    name: "Pureba",
-    shuttleTemplateId: 1,
-    clientId: 300310,
-    userId: 300310,
-    trackerId: 2935572,
-    schDepTime: "2024-06-03T22:44:00.000-0400",
-    schArrTime: "2024-06-03T22:44:00.000-0400",
-    startPlaceId: 2117241,
-    endPlaceId: 2117261,
-    statusId: 1,
-    created: "2024-06-26T09:32:10.893-0400"
-  }*/
+  let serviceShutters_In= ref([
+  {
+    "ss": {
+      "id": null,
+      "name": "",
+      "shuttleTemplateId": null,
+      "clientId": null,
+      "userId": null,
+      "trackerId": null,
+      "schDepTime": "2024-06-12T11:30:00.000-0400",
+      "startPlaceId": null,
+      "endPlaceId": null,
+      "statusId": null,
+      "created": "2024-06-26T12:58:25.551-0400"
+    },
+    "startPlace": {
+      "id": null,
+      "clientId": null,
+      "name": "",
+      "lat": 18.4872049,
+      "lng": -69.95793343,
+      "radius": null
+    },
+    "endPlace": {
+      "id": null,
+      "clientId": null,
+      "name": "",
+      "lat": 18.46658296,
+      "lng": -69.95625968,
+      "radius": null
+    }
+  },
   ])
 
 function eliminarShutter(id){
   deleteShutter(window.$cookies.get('authorized').user.hash,id).then(respDelete=>{
 
-    console.log(respDelete)
+        if (respDelete) {
+        view.value.deleted=true
+        view.value.deletedsms=respDelete
+        consultarServicesList()
+
+    }else{
+        view.value.deleted=true
+        view.value.deletedsms="No se pudo Cancelar"
+
+      }
+
+      setTimeout(()=>{
+        
+        view.value.deleted=false
+        view.value.deletedsms=""
+      },2000)
   })
 
 }
@@ -160,32 +212,7 @@ function consultarServicesList(){
     if (respServiceShuuter) {
 
       try{
-        serviceShutters_In.value=[]
-
-        respServiceShuuter.forEach(elemServiceList=>{
-
-          if(elemServiceList.id){
-
-            serviceShutters_In.value.push({
-
-              id: elemServiceList.id,
-              shuttleTemplateId: elemServiceList.shuttleTemplateId,
-              clientId: elemServiceList.clientId,
-              userId: elemServiceList.userId,
-              trackerId: elemServiceList.trackerId,
-              name: elemServiceList.name,
-              schDepTime: elemServiceList.schDepTime,
-              schArrTime: elemServiceList.schArrTime,
-              startPlaceId: elemServiceList.startPlaceId,
-              endPlaceId: elemServiceList.endPlaceId,
-              statusId: elemServiceList.statusId,
-              created: elemServiceList.created,
-            })
-
-          }else{
-            console.log("No existe Elemento alguno")
-          }
-        })
+        serviceShutters_In.value=respServiceShuuter
       }catch(err){
         console.log(err)
       }
@@ -196,113 +223,10 @@ function consultarServicesList(){
 
 
   })
-
-
 }
 
-  //------------------ FIN serviceShutters_In-------------------
 
-  /*function templateInfo(shuttleId){
-
-    try{
-
-      if (template_List_MAP.value.get(shuttleId).name) {
-
-        console.log(template_List_MAP.value.get(shuttleId))
-
-        return template_List_MAP.value.get(shuttleId)
-      }
-
-    }catch(error){
-      console.log(error)
-
-      return {
-          id: shuttleId,
-          clientId: null,
-          userId: null,
-          startPlaceId: null,
-          departureDue: "2000-06-03T22:44:00.000-0400",
-          endPlaceId: shuttleId,
-          arrivalDue: "2000-06-03T22:44:00.000-0400",
-          name: "No encontro id "+shuttleId
-
-        }
-    }
-
-
-
-  }*/
-
-  //------------------------------------------------
-
-/*  function trackerInfo(trackerId){
-
-    try{
-      if (trackerList_MAP.value.get(trackerId).label) {
-        return trackerList_MAP.value.get(trackerId)
-      }
-
-    }catch(error){
-      console.log(error)
-      return {
-        id: trackerId,
-        deviceId: "N/A",
-        model: "N/A",
-        label: "No encontro el id "+trackerId,
-        created: "2000-05-21"
-    }
-    }
-
-  }
-*/
-//-----------------------------------------------
-
-/*  function placesInfo(placeId){
-
-  try{
-    if (places_List_MAP.value.get(placeId).name) {
-
-      return places_List_MAP.value.get(placeId)
-    }
-  }catch(error){
-    console.log(error)
-    return  {
-      id: 2117241,
-      name: placeId,
-      lat: 18.4872049,
-      lng: -69.95793343,
-      radius: 50,
-      address: "C/ Lorenzo Despradel #2, La Castellana, Santo Domingo"
-    }
-  }
-
-}
-*/
-
-
-//------------------------------------------
-
-/*  function etaInfo(ShutterServiceId){
-    let temp=ShutterServiceId
-    temp= " "
-    console.log(temp)
-    try{
-
-      const output={
-        ultimaConexion:new Date().toLocaleString(),
-        porcentaje:50,
-        tiempoRestante:60,
-        kilometrosRestantes:30,
-        horaLLegada: new Date().toLocaleTimeString(),
-        status: "En Trasito"
-      }
-      return output
-    }catch{
-      return ShutterServiceId
-    }
-  }*/
-
-  const incomingData = defineProps({
+const incomingData = defineProps({
   in_trackers: Object,
   in_templates: Object,
   in_places: Object,
@@ -337,6 +261,23 @@ onMounted(async () => {
   position: relative;
   background-color: #606060;
   color: white;
+}
+
+.popEliminado {
+  /* background-color: #1e1f24; */
+  background-color: white;
+  position: absolute;
+  /* color: white; */
+  color: black;
+  width: 30%;
+  min-height: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 30%;
+  padding: 50px;
+  border-radius: 15px 15px 15px 15px;
+  z-index: 2;
+  box-shadow: rgba(0, 0, 0, 0.49) 0px 0px 30px 10px;
 }
 
 .tituloBola {

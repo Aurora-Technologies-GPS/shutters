@@ -12,17 +12,18 @@
 		<BindingPage :in_places="places_List" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
 	</div>
 
+	<h3 v-if="template_In.length <1" class="text-center" > NO HAY NINGUN TEMPLANTE
+	</h3>
 
-	<h3 v-if="template_In.length<1"  class="text-center" > NO HAY NINGUN TEMPLANTE</h3>
 
-	<div v-show="!view.showingBinding"  v-for=" (dato, index) in template_In" :key="index">
+	<div v-else v-show="!view.showingBinding"  v-for=" (dato, index) in template_In" :key="index">
 		<div class="rows">
 			<div class="row">
 				<div class="col-md-5">
 
 					<div class="contRowTitle">
 
-						<div @click="bindTracker(dato)" class="text-center iconoContainerTitle">
+						<div @click="bindTracker(dato.st)" class="text-center iconoContainerTitle">
 						<i class="bi bi-person-plus"></i>
 						<div class="title_text">ASIGNAR</div>
 							
@@ -31,7 +32,7 @@
 						<div class="tituloContainer">
 						<div>
 							<div class="title_temp">TITULO DEL TEMPLANTE:</div>
-							<div class="title_text">{{dato.name}}</div>	
+							<div class="title_text">{{dato.st.name}}</div>	
 						</div>
 
 						<div style="height: 20px;">
@@ -49,15 +50,15 @@
 
 						<div class="contenido">
 							<div>ORIGEN:</div>
-							<label>{{`${placesInfo(dato.startPlaceId).name} : ${placesInfo(dato.startPlaceId).address}`}}</label>
+							<label>{{`${dato.startPlace.name} : ${dato.startPlace.address}`}}</label>
 							<div>DESTINO:</div>
-							<label>{{` ${placesInfo(dato.endPlaceId).name} : ${placesInfo(dato.endPlaceId).address}`}}</label>
+							<label>{{`${dato.endPlace.name} : ${dato.endPlace.address}`}}</label>
 						</div>
 						<div class="contenido">
 							<div>SALIDA:</div>
-							<label>{{getTimeAndDate(dato.departureDue)}}</label>
+							<label>{{getTimeAndDate(dato.st.departureDue)}}</label>
 							<div>LLEGADA:</div>
-							<label>{{getTimeAndDate(dato.arrivalDue)}}</label>
+							<label>{{getTimeAndDate(dato.st.arrivalDue)}}</label>
 						</div>
 					</div>
 
@@ -70,7 +71,7 @@
         <div class="text-center dropdown-menu" >
           <a class="dropdown-item" href="#">Accion</a>
           <div class="dropdown-divider"></div>
-          <a @click="eliminarTemplate(dato.id)" class="dropdown-item" href="#">Eliminar Template</a>
+          <a @click="eliminarTemplate(dato.st.id)" class="dropdown-item" href="#">Eliminar Template</a>
         </div>
 							
 						</div>
@@ -103,19 +104,38 @@ const places_List =ref( new Map())
 // const trackers_List =ref( new Map())
 
 let template_In= ref([
-{
-	id:null,
-	clientId:null,
-	userId:null,
-	name:"",
-	startPlaceId:null,
-	endPlaceId:null,
-	departureDue: "2020-06-04T02:44:57Z",
-	arrivalDue: "2020-06-04T02:44:57Z",
-	estimatedTime:null,
-	estimateDistance:null
-	// note:""
-}
+/*{
+		st: {
+			id: null,
+			clientId: null,
+			userId: 300310,
+			startPlaceId: 2117241,
+			departureDue: "2024-06-03T22:44:00.000-0400",
+			endPlaceId: 2117261,
+			arrivalDue: "2024-06-03T22:44:00.000-0400",
+			name: "DEIBY LORA LLEVAR JUGO A SU CASA DESPUESs ",
+			estimatedTime: 665,
+			estimateDistance: 10324
+		},
+		startPlace: {
+			id: 2117241,
+			clientId: 300310,
+			name: "MI CASA ",
+			lat: 18.4872049,
+			lng: -69.95793343,
+			radius: 50,
+			address: "Orquideas, Santo Domingo de Guzmán, Distrito Nacional, República Dominicana, 10132"
+		},
+		endPlace: {
+			id: 2117261,
+			clientId: 300310,
+			name: "CASA DE NOEL ",
+			lat: 18.53096835,
+			lng: -69.90716463,
+			radius: 122,
+			address: "Banca Quisqueya, Avenida Hermanas Mirabal, Villa Mella, Santo Domingo, República Dominicana, 11201"
+		}
+	}*/
 ])
 
 let template_Out= ref([{
@@ -135,6 +155,7 @@ let template_Out= ref([{
 ])
 
 function hideBinding() {
+	consultarTemplates()
 
 	view.value.showingBinding=false
 
@@ -170,10 +191,8 @@ function consultarTemplates(){
 
 	if (res_templateList) {
 
-		//res_templateList[0].id
-		try{
 
-			console.log(res_templateList)
+		try{
 
 			template_In.value=res_templateList
 
@@ -189,7 +208,7 @@ function consultarTemplates(){
 
 
 
-function placesInfo(placeId){
+/*function placesInfo(placeId){
 
 	try{
 		if (places_List.value.get(placeId).name) {
@@ -208,7 +227,7 @@ function placesInfo(placeId){
 		}
 	}
 
-}
+}*/
 
 
 
@@ -278,13 +297,12 @@ onMounted(async () => {
   min-height: 40%;
   left: 50%;
   transform: translateX(-50%);
-  top: 30%;
+  top: 20%;
   padding: 50px;
   border-radius: 15px 15px 15px 15px;
   z-index: 2;
   box-shadow: rgba(0, 0, 0, 0.49) 0px 0px 30px 10px;
 }
-<
 
 	.title_text{
 		font-weight: 710;
