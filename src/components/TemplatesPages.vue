@@ -1,6 +1,6 @@
 <template>
 	<!-- background-color: red; -->
-	<div style=" max-height: 80vh; overflow: auto;  margin-right: -40px;">
+	<div style=" max-height: 80vh; overflow: auto;  margin-right: 0px;">
 
 		<div v-if="view.deleted" class="popEliminado text-center">
 			<h3>{{view.deletedsms}}</h3>

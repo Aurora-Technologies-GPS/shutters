@@ -113,7 +113,7 @@
 
 				
 				<div v-if="view.showingAsignarShutter"  class="d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-					<TemplatesPages  @ir="goto" :in_places="places_List" />				
+					<TemplatesPages class="d-xl-block d-lg-block  d-md-block d-sm-none d-none"  @ir="goto" :in_places="places_List" />				
 				</div>
 
 				<div v-if="view.showingAddTemplate"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">

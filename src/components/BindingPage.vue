@@ -210,9 +210,11 @@ onMounted(async () => {
 
 .formContainer{
 	padding: 40px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	background: white;
 	border-radius: 15px 15px 15px 15px;
-	box-shadow: rgba(0, 0, 0, 0.49) 0px 0px 30px 10px;
+	box-shadow: rgba(0, 0, 0, 0.49) 0px 0px 20px 5px;
 }
 
 .btnCerrar{
