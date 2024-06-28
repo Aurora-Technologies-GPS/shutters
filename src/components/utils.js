@@ -1,6 +1,6 @@
-export function getStatus(statusId){
+export function getStatus(estatusN){
 
-    switch (statusId) {
+    switch (estatusN) {
 
   case 1:
       return { label:'PENDING', color:'#e0e0e0' } 

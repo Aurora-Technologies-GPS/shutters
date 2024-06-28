@@ -13,48 +13,57 @@
 							<div>
 								<i :style="{color: getStatus(1).color}" class="bi bi-circle-fill">
 									<span>{{getStatus(1).label}}</span>
+									<span style="">{{'20/30'}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(2).color}" class="bi bi-circle-fill"> 
 									<span>{{getStatus(2).label}}</span>
+									<span style="">{{'20/30'}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(3).color}" class="bi bi-circle-fill"> 
 									<span>{{getStatus(3).label}}</span>
+									<span style="">{{'20/30'}}</span>
 								</i>
 							</div>
 
 							<div>
 								<i :style="{color: getStatus(4).color}" class="bi bi-circle-fill">
 									<span>{{getStatus(4).label}}</span>
+									<span style="">{{'20/30'}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(5).color}" class="bi bi-circle-fill">
-									<span>{{getStatus(5).label}}</span>								
+									<span>{{getStatus(5).label}}</span>
+									<span style="">{{'20/30'}}</span>								
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(6).color}" class="bi bi-circle-fill">
-									<span>{{getStatus(6).label}}</span>								
+									<span>{{getStatus(6).label}}</span>	
+									<span style="">{{'20/30'}}</span>							
 								</i>
 							</div>
 
 							<div>
 								<i :style="{color: getStatus(7).color}" class="bi bi-circle-fill">
 									<span>{{getStatus(7).label}}</span>
+									<span style="">{{'20/30'}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(8).color}" class="bi bi-circle-fill">
 									<span>{{getStatus(8).label}}</span>
+									<span style="">{{'20/30'}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(9).color}" class="bi bi-circle-fill">
 									<span>{{getStatus(9).label}}</span>
+									<span style="">{{'20/30'}}</span>
 								</i>
 							</div>
 

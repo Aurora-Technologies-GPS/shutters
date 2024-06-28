@@ -9,12 +9,12 @@
 <!--  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none" -->
 	<div v-if="view.showingBinding">
 
-		<BindingPage :in_places="places_List" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
+		<BindingPage @ir="gotoshutters" :in_places="places_List" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
 	</div>
 
-	<h3 v-if="template_In.length <1" class="text-center" > NO HAY NINGUN TEMPLANTE
-	</h3>
-
+	<h2 v-if="view.listadoVacio" 
+        class="text-center" > {{view.listadoVacioSms}}       
+    </h2>
 
 	<div v-else v-show="!view.showingBinding"  v-for=" (dato, index) in template_In" :key="index">
 		<div class="rows">
@@ -91,20 +91,22 @@
 <script setup>
 
 import BindingPage from './BindingPage.vue'
-import { ref, defineProps, onMounted } from 'vue';
+import { ref, defineProps, defineEmits, onMounted } from 'vue';
 import { findTemplates, deleteTemplate  } from './DataConector.js' 
 
 const view=ref({
 	showingBinding:false,
 	deleted:false,
-	deletedsms:""
+	deletedsms:"",
+	listadoVacio:true,
+	listadoVacioSms:"No Hay Ningun Shutter"
 })
 
 const places_List =ref( new Map())
 // const trackers_List =ref( new Map())
 
 let template_In= ref([
-/*{
+{
 		st: {
 			id: null,
 			clientId: null,
@@ -135,23 +137,21 @@ let template_In= ref([
 			radius: 122,
 			address: "Banca Quisqueya, Avenida Hermanas Mirabal, Villa Mella, Santo Domingo, República Dominicana, 11201"
 		}
-	}*/
+	}
 ])
 
-let template_Out= ref([{
-	id:0,
-	clientId:0,
-	userId:0,
-	name:"",
-	startPlaceId:0,
-	endPlaceId:2117261,
-	departureDue: "",
-	arrivalDue: "",
-	estimatedTime:null,
-	estimateDistance:null
-
-	// note:""
-}
+let template_Out= ref([/*  {
+	id: null,
+	clientId: null,
+	userId: 300310,
+	startPlaceId: 2117241,
+	departureDue: "2024-06-03T22:44:00.000-0400",
+	endPlaceId: 2117261,
+	arrivalDue: "2024-06-03T22:44:00.000-0400",
+	name: "DEIBY LORA LLEVAR JUGO A SU CASA DESPUESs ",
+	estimatedTime: 665,
+	estimateDistance: 10324
+	} */
 ])
 
 function hideBinding() {
@@ -193,8 +193,15 @@ function consultarTemplates(){
 
 
 		try{
+			if (res_templateList== 'Not Shuttles Templates or Places avalible') {
+				view.value.listadoVacio=true
+				view.value.listadoVacioSms=res_templateList
+			} else {
+				view.value.listadoVacio=false
+				view.value.listadoVacioSms="No Hay Ningun Shutter"
+				template_In.value=res_templateList
+			}
 
-			template_In.value=res_templateList
 
 		}catch(err){
 			console.log(err)
@@ -205,31 +212,6 @@ function consultarTemplates(){
 })
 
 }//----------<<< FIN  temp_findTemplates consult   >>----------
-
-
-
-/*function placesInfo(placeId){
-
-	try{
-		if (places_List.value.get(placeId).name) {
-
-			return places_List.value.get(placeId)
-		}
-	}catch(error){
-		console.log(error)
-		return 	{
-			id: 2117241,
-			name: placeId,
-			lat: 18.4872049,
-			lng: -69.95793343,
-			radius: 50,
-			address: "C/ Lorenzo Despradel #2, La Castellana, Santo Domingo"
-		}
-	}
-
-}*/
-
-
 
 
 function getTimeAndDate(isoDate){
@@ -254,6 +236,14 @@ function bindTracker(template){
 	template_Out.value=template
 	view.value.showingBinding=true
 }
+
+function gotoshutters(){
+	outGoingData('ir',2);
+}
+
+const outGoingData = defineEmits(
+	['ir']
+)
 
 const incomingData = defineProps({
   in_places: Object,

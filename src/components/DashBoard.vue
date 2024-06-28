@@ -109,16 +109,16 @@
 <!-- :in_trackers="trackers_List" -->
 				<ShuttersTables :in_places="places_List" v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
 
-				<TemplatesPages v-if="view.template" :in_places="places_List" />
+				<TemplatesPages  @ir="goto" v-if="view.template" :in_places="places_List" />
 
 				
 				<div v-if="view.showingAsignarShutter"  class="d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-					<TemplatesPages :in_places="places_List" />				
+					<TemplatesPages  @ir="goto" :in_places="places_List" />				
 				</div>
 
 				<div v-if="view.showingAddTemplate"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
 
-				<NuevoTemplate  @cerrar="hideAddTemplate" :in_places="places_List" class="popFormContainer" />			
+				<NuevoTemplate @ir="goto"  @cerrar="hideAddTemplate" :in_places="places_List" class="popFormContainer" />			
 			
 				</div>
 
@@ -330,6 +330,27 @@
 		console.log("Creando un Shutter")
 		view.value.shutterService=false
 		view.value.showingAsignarShutter=true
+	}
+	function goto(view){
+		switch (view) {
+		case 1:
+			showHomeViewPage();
+			break;
+		case 2:
+			showShutterServicePage();
+			break;
+		case 3:
+			showtemplatePage();
+			break;
+		case 4:
+			showReportesPage();
+			break;
+		default:
+			console.log(`No se hara nada`);
+			break;
+		}
+
+
 	}//----------<<< FIN FUNCIONES DE VISTAS >>----------
 
 	function salir(){

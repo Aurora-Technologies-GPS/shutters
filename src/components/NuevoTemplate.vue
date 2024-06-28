@@ -120,6 +120,7 @@ function enviar(){
 
 			setTimeout(()=>{
 				hideMe()
+				gotoTemplates()
 			},2000)
 
 		})
@@ -137,6 +138,10 @@ function enviar(){
 
 function hideMe(){
 	outGoingData('cerrar');
+}
+
+function gotoTemplates(){
+	outGoingData('ir',3);
 }
 
 const incomingData = defineProps({

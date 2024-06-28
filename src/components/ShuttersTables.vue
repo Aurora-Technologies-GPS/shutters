@@ -5,15 +5,11 @@
       <h3>{{view.deletedsms}}</h3>
     </div>
 
-		<h2 v-if="serviceShutters_In.length<1"  class="text-center" > No Hay Ningun Shutter</h2>
-
-      <div v-if="serviceShutters_In[0].ss.id == null" class="text-center">
-        {{view.loading}}        
-      </div>
-
+      <h2 v-if="view.listadoVacio" 
+        class="text-center" > {{view.listadoVacioSms}}       
+      </h2>
 
 			<div v-else v-for=" (dato, index) in serviceShutters_In" :key="index" >
-
 
         <div class="card">
          <!--  :class="{ important: dato.important }" -->
@@ -138,7 +134,8 @@
 const view=ref({
   deleted:false,
   deletedsms:"",
-  loading:"cargando"
+  listadoVacio:true,
+  listadoVacioSms:"No Hay Ningun Shutter"
 })
 
 
@@ -149,37 +146,37 @@ const view=ref({
 
   let serviceShutters_In= ref([
   {
-    "ss": {
-      "id": null,
-      "name": "",
-      "shuttleTemplateId": null,
-      "clientId": null,
-      "userId": null,
-      "trackerId": null,
-      "schDepTime": "2024-06-12T11:30:00.000-0400",
-      "startPlaceId": null,
-      "endPlaceId": null,
-      "statusId": null,
-      "created": "2024-06-26T12:58:25.551-0400"
+    ss: {
+      id: null,
+      name: "",
+      shuttleTemplateId: null,
+      clientId: null,
+      userId: null,
+      trackerId: null,
+      schDepTime: "2024-06-12T11:30:00.000-0400",
+      startPlaceId: null,
+      endPlaceId: null,
+      statusId: 5,
+      created: "2024-06-26T12:58:25.551-0400"
     },
-    "startPlace": {
-      "id": null,
-      "clientId": null,
-      "name": "",
-      "lat": 18.4872049,
-      "lng": -69.95793343,
-      "radius": null
+    startPlace: {
+      id: null,
+      clientId: null,
+      name: "",
+      lat: 18.4872049,
+      lng: -69.95793343,
+      radius: null
     },
-    "endPlace": {
-      "id": null,
-      "clientId": null,
-      "name": "",
-      "lat": 18.46658296,
-      "lng": -69.95625968,
-      "radius": null
+    endPlace: {
+      id: null,
+      clientId: null,
+      name: "",
+      lat: 18.46658296,
+      lng: -69.95625968,
+      radius: null
     }
   },
-  ])
+] )
 
 function eliminarShutter(id){
   deleteShutter(window.$cookies.get('authorized').user.hash,id).then(respDelete=>{
@@ -212,7 +209,18 @@ function consultarServicesList(){
     if (respServiceShuuter) {
 
       try{
-        serviceShutters_In.value=respServiceShuuter
+
+        if (respServiceShuuter== 'Not registers found') {
+          view.value.listadoVacio=true
+          view.value.listadoVacioSms=respServiceShuuter
+          
+        } else {
+          view.value.listadoVacio=false
+          view.value.listadoVacioSms="No Hay Ningun Shutter"
+          serviceShutters_In.value=respServiceShuuter
+          
+        }
+
       }catch(err){
         console.log(err)
       }

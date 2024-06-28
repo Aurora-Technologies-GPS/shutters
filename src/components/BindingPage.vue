@@ -158,6 +158,8 @@ function enviar(){
 			adding.value.saved=true
 			adding.value.sms=respAddServiceShutter
 
+			gotoshutters()
+
 			}else{
 				adding.value.saved=true
 				adding.value.sms="No se Guardaron Datos"
@@ -175,13 +177,17 @@ function hideMe(){
 	outGoingData('cerrar');
 }
 
+function gotoshutters(){
+	outGoingData('ir');
+}
+
 const incomingData = defineProps({
   in_template: Object,
   in_places: Object,
 })
 const outGoingData = defineEmits(
-	['cerrar']
-	)
+	['cerrar', 'ir']
+)
 
 
 onMounted(async () => {
