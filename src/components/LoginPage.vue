@@ -18,7 +18,7 @@
 <br>	
 <div  class="searchBar rounded-pill" style="position: relative;">
 <i class="bi bi-key-fill"></i>
-<input class="inputsearchBar" v-model="datosUser.password"  placeholder="Contrasena" type="password"  required>
+<input  @keyup="onPress" class="inputsearchBar" v-model="datosUser.password"  placeholder="Contrasena" type="password"  required>
 <i v-if="claveIncorrecta" class="bi bi-exclamation-circle" style="position: absolute; right: 5%; margin: 5px; font-size: larger; color: red;"></i> 
 </div>
 
@@ -54,6 +54,16 @@ if (window.$cookies.isKey('authorized')){
 }else{
   console.log("Logeate Por Favor")
 }
+
+const onPress = (e) => {
+    if (e.key == "Enter") {
+      consultar()
+      return;
+    }else{
+  
+      return;
+    }
+  };
 
 
 function consultar(){
