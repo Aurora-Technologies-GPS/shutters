@@ -102,23 +102,23 @@
 						<div class="title_views">SHUTTERS</div>
 						<div class="subtitle">TIEMPO Y DISTANCIAS ESTIMADAS DE LLEGADA</div>
 						<div class="listContainer">
-							<ShuttersTables :in_places="places_List" />
+							<ShuttersTables  />
 						</div>
 					</div>
 				</div>
 <!-- :in_trackers="trackers_List" -->
-				<ShuttersTables :in_places="places_List" v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
+				<ShuttersTables  v-if="view.shutterService" class="d-xl-block d-lg-block  d-md-block d-sm-none d-none fullPage" />
 
-				<TemplatesPages  @ir="goto" v-if="view.template" :in_places="places_List" />
+				<TemplatesPages  @ir="goto" v-if="view.template" />
 
 				
 				<div v-if="view.showingAsignarShutter"  class="d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-					<TemplatesPages class="d-xl-block d-lg-block  d-md-block d-sm-none d-none"  @ir="goto" :in_places="places_List" />				
+					<TemplatesPages class="d-xl-block d-lg-block  d-md-block d-sm-none d-none"  @ir="goto" />				
 				</div>
 
 				<div v-if="view.showingAddTemplate"  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none">
 
-				<NuevoTemplate @ir="goto"  @cerrar="hideAddTemplate" :in_places="places_List" class="popFormContainer" />			
+				<NuevoTemplate @ir="goto"  @cerrar="hideAddTemplate"  class="popFormContainer" />			
 			
 				</div>
 
@@ -128,10 +128,10 @@
 
 			<div class="d-xl-none d-lg-none  d-md-none d-sm-block d-block mobilebody">
 
-				<ShuttersTables v-if="view.mobiShutters" :in_places="places_List" />
-<!-- 				<TemplatesPages v-if="view.mobiTemplates" :in_places="places_List" class="mobileFormContainer" /> -->
-				<TemplatesPages v-if="view.mobiAsignar" :in_places="places_List" class="mobileFormContainer" />
-				<NuevoTemplate  v-if="view.mobiAddTemplate"  :in_places="places_List" class="mobileFormContainer" />
+				<ShuttersTables v-if="view.mobiShutters" />
+<!-- 				<TemplatesPages v-if="view.mobiTemplates"  class="mobileFormContainer" /> -->
+				<TemplatesPages v-if="view.mobiAsignar" class="mobileFormContainer" />
+				<NuevoTemplate  v-if="view.mobiAddTemplate"  class="mobileFormContainer" />
 				
 			</div>
 
@@ -147,7 +147,7 @@
 	import NuevoTemplate from './NuevoTemplate.vue'
 	import TemplatesPages from './TemplatesPages.vue'
 	import ReportesPage from './ReportesPage.vue'
-	import { placeList , logout } from './DataConector.js' 
+	import { logout } from './DataConector.js' 
 
 	let user=ref({
 		firstName:'NOEL',
@@ -183,9 +183,6 @@
 		showingAsignarShutter:false
 	})
 
-	const places_List =ref( new Map());
-/*	const trackers_List =ref( new Map());*/
-
 	function hideAddTemplate(){
 		view.value.showingAddTemplate=false
 	}
@@ -204,30 +201,6 @@
 			console.log("ocurrio un Error al cargar places")
 		}
 	});//----------<<< FIN  trackers consult   >>----------*/
-
-//----------<<<  temp_placeList consult   >>----------
-	placeList(window.$cookies.get('authorized').user.hash).then(respPlaces=>{
-
-		if (respPlaces) {
-
-			try{
-				respPlaces.list.forEach(elemPlace=>{
-
-					if (elemPlace.id) {
-						places_List.value.set(elemPlace.id, elemPlace)
-					}else{
-						console.log("no existe tal")
-					}
-				})
-
-			}catch(err){
-				console.log(err)
-			}
-		}else{
-			console.log("ocurrio un Error al cargar places")
-		}
-	});//----------<<< FIN temp_placeList consult   >>----------
-
 
 //----------<<<  FUNCIONES DE VISTAS >>----------
 	function showHomeViewPage(){
@@ -256,6 +229,7 @@
 	}
 
 	function showtemplatePage(){
+
 		view.value.title="TEMPLATES"
 		view.value.btn="CREAR TEMPLANTE"
 		view.value.btn_acction=3
@@ -336,12 +310,12 @@
 	}
 
 	function addTemplate(){
-		console.log("Creando un TEMP")
+		//console.log("Creando un TEMP")
 		view.value.showingAddTemplate=true
 	}
 
 	function asignarShutt(){
-		console.log("Creando un Shutter")
+		//console.log("Creando un Shutter")
 		view.value.shutterService=false
 		view.value.showingAsignarShutter=true
 	}
@@ -354,6 +328,7 @@
 			showShutterServicePage();
 			break;
 		case 3:
+			
 			showtemplatePage();
 			break;
 		case 4:

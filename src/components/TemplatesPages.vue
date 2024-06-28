@@ -9,7 +9,7 @@
 <!--  class="popContainer d-xl-block d-lg-block  d-md-block d-sm-none d-none" -->
 	<div v-if="view.showingBinding">
 
-		<BindingPage @ir="gotoshutters" :in_places="places_List" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
+		<BindingPage @ir="gotoshutters" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
 	</div>
 	<div>
 		
@@ -92,7 +92,7 @@
 <script setup>
 
 import BindingPage from './BindingPage.vue'
-import { ref, defineProps, defineEmits, onMounted } from 'vue';
+import { ref,  defineEmits, onMounted } from 'vue'; //defineProps
 import { findTemplates, deleteTemplate  } from './DataConector.js' 
 
 const view=ref({
@@ -102,9 +102,6 @@ const view=ref({
 	listadoVacio:true,
 	listadoVacioSms:"No Hay Ningun Shutter"
 })
-
-const places_List =ref( new Map())
-// const trackers_List =ref( new Map())
 
 let template_In= ref([
 {
@@ -246,15 +243,14 @@ const outGoingData = defineEmits(
 	['ir']
 )
 
-const incomingData = defineProps({
+/* const incomingData = defineProps({
   in_places: Object,
   // in_trackers: Object,
 })
-
+ */
 
 onMounted(async () => {
 
-	places_List.value=incomingData.in_places
 	consultarTemplates()
 	// trackers_List.value=incomingData.in_trackers
 

@@ -61,7 +61,7 @@
 
 <script setup>
 	import { ref, defineProps, defineEmits, onMounted } from 'vue';
-	import { tracker, crearServiceShuttle } from './DataConector.js'
+	import { tracker, placeList ,crearServiceShuttle } from './DataConector.js'
 
 let adding=ref({
 	hash: window.$cookies.get('authorized').user.hash,
@@ -89,10 +89,12 @@ let trackersList=ref({
 	]
 })
 
-tracker(window.$cookies.get('authorized').user.hash).then(inTrackersList=>{
+function consultarTrackers(){
+	
+	tracker(window.$cookies.get('authorized').user.hash).then(inTrackersList=>{
 	if (inTrackersList) {
 
-		console.log(inTrackersList)
+		// console.log(inTrackersList)
 
 			trackersList.value=inTrackersList
 	}else{
@@ -100,6 +102,39 @@ tracker(window.$cookies.get('authorized').user.hash).then(inTrackersList=>{
 	}
 
 })
+
+}
+consultarTrackers()
+
+function consultarPlaces(){
+	placeList(window.$cookies.get('authorized').user.hash).then(respPlaces=>{
+
+if (respPlaces) {
+
+	try{
+		respPlaces.list.forEach(elemPlace=>{
+
+			if (elemPlace.id) {
+				places_List.value.set(elemPlace.id, elemPlace)
+			}else{
+				console.log("no existe tal")
+			}
+		})
+
+	}catch(err){
+		console.log(err)
+	}
+}else{
+	console.log("ocurrio un Error al cargar places")
+}
+});
+
+}
+
+consultarPlaces()
+
+
+
 
 
 const places_List =ref( new Map())
@@ -151,7 +186,7 @@ function enviar(){
 
 	crearServiceShuttle(adding.value).then(respAddServiceShutter=>{
 
-		console.log(respAddServiceShutter)
+		//console.log(respAddServiceShutter)
 
 
 		if (respAddServiceShutter) {
@@ -182,8 +217,7 @@ function gotoshutters(){
 }
 
 const incomingData = defineProps({
-  in_template: Object,
-  in_places: Object,
+  in_template: Object
 })
 const outGoingData = defineEmits(
 	['cerrar', 'ir']
@@ -197,10 +231,6 @@ onMounted(async () => {
 	adding.value.endPlaceId=incomingData.in_template.endPlaceId
 	adding.value.schDepTime=getTimeAndDate(incomingData.in_template.departureDue)
 	adding.value.schArrTime=getTimeAndDate(incomingData.in_template.arrivalDue)
-
-	places_List.value=incomingData.in_places
-
-
 })
 
 

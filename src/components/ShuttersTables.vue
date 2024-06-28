@@ -110,13 +110,10 @@
 
 <script setup>
 
-  import { ref, defineProps, onMounted } from 'vue';
+  import { ref, onMounted } from 'vue'; //defineProps
   import { find_Service_Shuttle, deleteShutter } from './DataConector.js'
   import { getStatus } from './utils.js'
 
-  // const trackerList_MAP =ref( new Map())
-  const template_List_MAP= ref(new Map());
-  const places_List_MAP =ref( new Map())
 
   let fake={
     porcentaje:50,
@@ -234,18 +231,14 @@ function consultarServicesList(){
 }
 
 
-const incomingData = defineProps({
+/* const incomingData = defineProps({
   in_trackers: Object,
   in_templates: Object,
   in_places: Object,
-})
+}) */
 
 
 onMounted(async () => {
-
-  // trackerList_MAP.value=incomingData.in_trackers
-  template_List_MAP.value=incomingData.in_templates
-  places_List_MAP.value=incomingData.in_places
 
   consultarServicesList()
 

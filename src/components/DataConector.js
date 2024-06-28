@@ -87,7 +87,7 @@ export async function crearTemplate(params) {
 }
 export async function crearServiceShuttle(params) {
     let data
-    console.log(params)
+
     await axios.post(api + '/v1/shuttle_service/create', params).then(response => {
         data = response.data
     }).catch(error => {

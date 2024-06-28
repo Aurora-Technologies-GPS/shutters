@@ -70,8 +70,8 @@
 
 <script setup>
 
-	import { ref, defineProps, defineEmits, onMounted } from 'vue';
-	import { crearTemplate } from './DataConector.js'
+	import { ref, defineEmits, onMounted } from 'vue'; //defineProps
+	import { crearTemplate, placeList } from './DataConector.js'
 
 
 const adding=ref({
@@ -99,6 +99,27 @@ let placesList=ref([
 			address: ""
 }
 ])
+
+
+
+function consultarPlaces(){
+	
+	placeList(window.$cookies.get('authorized').user.hash).then(respPlaces=>{
+		
+		if (respPlaces.list) {
+			
+			try{
+				//console.log(respPlaces)
+				placesList.value=respPlaces.list
+			
+			}catch(err){
+				console.log(err)
+			}
+		}else{
+			console.log("No se pudo consultar Places")
+		}
+	})
+}
 
 
 
@@ -143,27 +164,18 @@ function gotoTemplates(){
 	outGoingData('ir',3);
 }
 
-const incomingData = defineProps({
+/* const incomingData = defineProps({
   in_places: Object,
-})
+}) */
 
 const outGoingData = defineEmits(
-	['cerrar']
+	['cerrar','ir']
 	)
 
 
 
 onMounted(async () => {
-
-	placesList.value=[]
-
-
-
-	incomingData.in_places.forEach(elemt=>{
-		placesList.value.push(elemt)
-	});
-
-
+	consultarPlaces()
 })
 
 </script>
