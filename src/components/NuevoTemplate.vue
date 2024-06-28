@@ -75,7 +75,7 @@
 
 
 const adding=ref({
-  name:" ",
+  name:"",
   startPlaceId:null,
   endPlaceId:null,
   departureDue:null, //"2024-06-03T22:44
@@ -88,7 +88,6 @@ const adding=ref({
   userId: window.$cookies.get('authorized').user.id,
 	clientId: window.$cookies.get('authorized').user.clientId
 })
-
 
 let placesList=ref([
 {

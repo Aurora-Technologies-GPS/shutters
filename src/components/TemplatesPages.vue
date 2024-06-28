@@ -1,6 +1,6 @@
 <template>
-
-	<div>
+	<!-- background-color: red; -->
+	<div style=" max-height: 80vh; overflow: auto;  margin-right: -40px;">
 
 		<div v-if="view.deleted" class="popEliminado text-center">
 			<h3>{{view.deletedsms}}</h3>
@@ -11,7 +11,8 @@
 
 		<BindingPage @ir="gotoshutters" :in_places="places_List" :in_template="template_Out" class="popFormContainer" @cerrar="hideBinding" />					
 	</div>
-
+	<div>
+		
 	<h2 v-if="view.listadoVacio" 
         class="text-center" > {{view.listadoVacioSms}}       
     </h2>
@@ -82,7 +83,7 @@
 			</div>
 		</div>
 	</div>
-
+	</div>
 
 	</div>
 
@@ -274,7 +275,6 @@ onMounted(async () => {
 	flex-wrap: wrap;
 	flex-direction: column;
 	justify-content: space-around;
-
 }
 
 .popEliminado {
@@ -345,6 +345,7 @@ onMounted(async () => {
 
 	.rows{
 		background: white;
+		width:99% ;
 		padding: 5px;
 		margin-top: 10px;
 		border-radius: 10px 10px 10px 10px;
@@ -379,7 +380,7 @@ onMounted(async () => {
 	flex-wrap: wrap;
 	flex-direction: column;
 	justify-content: space-around;
-	font-size: 35px;
+	font-size: 30px;
 	border-left: solid 1px;
 	border-color: #80808030;
 
