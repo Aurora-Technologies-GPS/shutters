@@ -13,19 +13,19 @@
 							<div>
 								<i :style="{color: getStatus(1).color}" class="bi bi-circle-fill">
 									<span>{{getStatus(1).label}}</span>
-									<span style="">{{'20/30'}}</span>
+									<span style="">{{countList.pending+'/'+countList.total}}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(2).color}" class="bi bi-circle-fill"> 
 									<span>{{getStatus(2).label}}</span>
-									<span style="">{{'20/30'}}</span>
+									<span style="">{{ countList.preCheckin+'/'+countList.total }}</span>
 								</i>
 								<br>
 								<div class="espacio"></div>
 								<i :style="{color: getStatus(3).color}" class="bi bi-circle-fill"> 
 									<span>{{getStatus(3).label}}</span>
-									<span style="">{{'20/30'}}</span>
+									<span style="">{{countList.lateCheckin+'/'+countList.total}}</span>
 								</i>
 							</div>
 
@@ -94,18 +94,34 @@
 </template>
 
 <script setup>
-	// import { ref } from 'vue'
+	import { ref } from 'vue'
 	import { getStatus } from './utils.js' 
-	import {  } from './DataConector.js' //counts(hash)
+	import { counts } from './DataConector.js'
 
-/*	const countList=ref()
+const countList=ref(
+{
+	total: 0,
+	pending: 0,
+	preCheckin: 0,
+	lateCheckin: 0,
+	inTime: 0,
+	warning: 0,
+	overdue: 0,
+	doneInTime: 0,
+	doneLate: 1,
+	cancelled: 0,
+	expired: 0
+})
 
-
-	if (window.$cookies.isKey('authorized')){
+if (window.$cookies.isKey('authorized')){
 
 
 		counts(window.$cookies.get('authorized').user.hash).then(respCounts=>{
+
+			
 			if (respCounts) {
+
+				console.log(respCounts)
 				countList.value=respCounts
 
 			} else {
@@ -114,7 +130,7 @@
 			}
 		})
 
-	}*/
+}
 
 
 
