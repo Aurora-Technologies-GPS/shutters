@@ -49,3 +49,30 @@ export function getStatus(estatusN){
 }
 
 
+function  ten (i) {
+
+  return (i < 10 ? '0' : '')+i;
+
+}
+
+
+export function getTimeAndDate(isoDate){
+
+
+let dateOut =new Date(isoDate)
+
+const YYYY = dateOut. getFullYear()
+
+const MM = ten(dateOut.getMonth() + 1)
+const DD = ten(dateOut.getDate())
+
+const HH = ten(dateOut.getHours())
+
+const II = ten(dateOut.getMinutes())
+const SS = ten(dateOut.getSeconds())
+
+dateOut = YYYY + '-'+ MM +'-'+ DD +'T'+ HH +':'+ II+':'+ SS;
+
+return dateOut //"2017-06-01T08:30"
+
+}

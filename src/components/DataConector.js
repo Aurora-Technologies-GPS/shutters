@@ -42,7 +42,15 @@ export async function tracker(hash) {
     return data
 }
 
-
+export async function counts(hash) {
+    let data = []
+    await axios.get(api + '/v1/shuttle_service/count/' + hash).then(response => {
+        data = response.data
+    }).catch(error => {
+        console.log(error)
+    });
+    return data
+}
 
 export async function findTemplates(hash) {
     let data = []

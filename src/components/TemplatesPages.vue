@@ -231,6 +231,8 @@ function getTimeAndDate(isoDate){
 }
 
 function bindTracker(template){
+
+	console.log(template)
 	template_Out.value=template
 	view.value.showingBinding=true
 }

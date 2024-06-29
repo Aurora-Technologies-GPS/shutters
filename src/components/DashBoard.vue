@@ -51,6 +51,8 @@
 	
 		<div class="areaTrabajo">
 
+			<mainPage v-if="view.reportes"/>
+
 			<div class="text-right headerMenu" href="/dashboard">
 
 				<div class="btnContainer">
@@ -81,8 +83,7 @@
 				</div>
 
 			</div>
-
-			<div class="mainContainer">
+			<div  v-if="!view.reportes"  class="mainContainer">
 
 				<div class="view_header">
 
@@ -122,7 +123,7 @@
 			
 				</div>
 
-				<ReportesPage v-if="view.reportes" />
+				<ReportesPage v-if="false" />
 
 			</div>
 
@@ -142,7 +143,8 @@
 
 <script setup>
 	import { ref } from 'vue'
-	import HeaderMenu from './HeaderMenu.vue' 
+	import HeaderMenu from './HeaderMenu.vue'
+	import mainPage from './mainPage.vue'
 	import ShuttersTables from './ShuttersTables.vue'
 	import NuevoTemplate from './NuevoTemplate.vue'
 	import TemplatesPages from './TemplatesPages.vue'
@@ -349,11 +351,6 @@
 				if (res_logout) {
 					if(res_logout.success){
 						console.log(res_logout)
-						
-						// setTimeout(()=>{
-							window.$cookies.remove('authorized') 
-							window.location.replace("./");
-						// },2000)
 
 					}else{
 						console.log("NO SE PUDO DESLOGUEAR")
@@ -361,6 +358,11 @@
 				}else{
 					console.log("No se Pudo hacer Logout")
 				}
+
+				setTimeout(()=>{
+							window.$cookies.remove('authorized') 
+							window.location.replace("./");
+						},2000)
 			})
 		}catch(error){
 			console.log(error)

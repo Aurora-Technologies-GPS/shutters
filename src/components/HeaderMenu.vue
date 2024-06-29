@@ -94,7 +94,29 @@
 </template>
 
 <script setup>
-	import { getStatus } from './utils.js'
+	// import { ref } from 'vue'
+	import { getStatus } from './utils.js' 
+	import {  } from './DataConector.js' //counts(hash)
+
+/*	const countList=ref()
+
+
+	if (window.$cookies.isKey('authorized')){
+
+
+		counts(window.$cookies.get('authorized').user.hash).then(respCounts=>{
+			if (respCounts) {
+				countList.value=respCounts
+
+			} else {
+
+				console.log("no se pudo encotrar CountsList")
+			}
+		})
+
+	}*/
+
+
 
 </script>
 

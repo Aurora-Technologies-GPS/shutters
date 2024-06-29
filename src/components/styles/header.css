@@ -1,0 +1,32 @@
+.headerMenu {
+	background: #ffffff;
+	
+	height: auto; 
+	width: 100%;
+}
+
+.headerMenu .btnContainer{
+	position: relative;
+	color: grey;
+	height: 100%;
+}
+
+.centered-element {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.headerMenu .btnContainer .btns{
+	right: 40px;
+}
+
+.headerMenu .btnContainer .btns .logut{
+	margin-left: 30px;
+	cursor: pointer;
+}
+
+.headerMenu .btnContainer .btns .user{
+	margin-right: 30px;
+}

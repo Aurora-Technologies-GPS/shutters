@@ -24,12 +24,12 @@
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="inputSalida">TIEMPO DE SALIDA</label>
-						<input v-model="adding.schDepTime" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
+						<input v-model="adding.inputdepTime" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
 					</div>
 
 					<div class="form-group col-md-6">
 						<label for="inputLlegada">TIEMPO DE LLEGADA</label>
-						<input  v-model="adding.schArrTime" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
+						<input  v-model="adding.inputArrTime" class="form-control datepicker" name="from" placeholder="Selected starting date" type="datetime-local"  />
 					</div>
 				</div>
 
@@ -61,7 +61,8 @@
 
 <script setup>
 	import { ref, defineProps, defineEmits, onMounted } from 'vue';
-	import { tracker, placeList ,crearServiceShuttle } from './DataConector.js'
+	import { tracker, placeList , crearServiceShuttle } from './DataConector.js' // aqui
+	import { getTimeAndDate} from './utils.js'
 
 let adding=ref({
 	hash: window.$cookies.get('authorized').user.hash,
@@ -70,8 +71,10 @@ let adding=ref({
   trackerId:null,
   startPlaceId:null,
 	endPlaceId:null,
-  schDepTime: getTimeAndDate("2020-12-09T02:44:57Z"),
-	schArrTime: getTimeAndDate("2020-06-04T02:44:57Z"),
+	inputdepTime: null, //"2017-06-01T08:30",
+	inputArrTime: null, //getTimeAndDate(isoDate),
+  schDepTime:null, // "2024-06-29T10:00:00.000-0400"
+	schArrTime: null, //"2024-06-29T10:00:00.000-0400",
   saved:false,
   sms:" "
 })
@@ -153,36 +156,13 @@ function get_places_Label(placeId){
 	}
 }
 
-function getTimeAndDate(isoDate){
-
-try{
-
-	let dateOut=new Date(isoDate)
-	
-	dateOut=dateOut.toLocaleString().split(",")
-	
-	const fecha=dateOut[0].split("/")
-	const tiempo=dateOut[1].substr(1,5)
-
-	const espacio1 =  fecha[1] < 9 ? '-0' : '-'
-	const espacio2 =  fecha[0] < 9 ? '-0' : '-'
-
-
-	dateOut=`${fecha[2]}${espacio1}${fecha[1]}${espacio2}${fecha[0]}T${tiempo}`
-
-	return dateOut
-
-	}catch{
-		// console.log(`NO se Convirtio isoDate ${isoDate}`)
-		return null
-	} 
-
-}
-
-
-
 
 function enviar(){
+
+	adding.value.schDepTime=adding.value.inputdepTime
+	adding.value.schArrTime=adding.value.inputArrTime
+
+
 
 	crearServiceShuttle(adding.value).then(respAddServiceShutter=>{
 
@@ -212,6 +192,7 @@ function hideMe(){
 	outGoingData('cerrar');
 }
 
+
 function gotoshutters(){
 	outGoingData('ir');
 }
@@ -229,8 +210,10 @@ onMounted(async () => {
 	adding.value.name=incomingData.in_template.name
 	adding.value.startPlaceId=incomingData.in_template.startPlaceId
 	adding.value.endPlaceId=incomingData.in_template.endPlaceId
-	adding.value.schDepTime=getTimeAndDate(incomingData.in_template.departureDue)
-	adding.value.schArrTime=getTimeAndDate(incomingData.in_template.arrivalDue)
+	adding.value.inputdepTime=getTimeAndDate(incomingData.in_template.departureDue)
+	adding.value.inputArrTime=getTimeAndDate(incomingData.in_template.arrivalDue)
+	adding.value.schDepTime=incomingData.in_template.departureDue
+	adding.value.schArrTime=incomingData.in_template.arrivalDue
 })
 
 
