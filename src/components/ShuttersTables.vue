@@ -12,7 +12,6 @@
 			<div v-else v-for=" (dato, index) in serviceShutters_In" :key="index" >
 
         <div class="card">
-         <!--  :class="{ important: dato.important }" -->
           <div class="card-header"  :style="{background: getStatus(dato.ss.statusId).color}" style="border-radius: 15px 15px 0px 0px;" >
 
         <button style="float: right; border: none; background: transparent;" data-toggle="dropdown" >
@@ -43,10 +42,81 @@
 
           </div>
           <div class="card-body">
-            <div class="row" style="height: auto">
+            <div  style=" display: flex;  flex-direction: row-reverse;">
 
-              <div class=" col-lg-8 col-xl-9 col-md-7 col-sm-8 col-8 "
-                style=" position: relative; margin-top: auto; margin-bottom: auto;">
+
+              <div  style="width:25%;">
+
+                <div class="form-row">
+                  <div class="form-group col-md-6 col-sm-12" style="margin-top:auto; margin-bottom: auto;">
+
+
+
+                    <div style="display: flex;">
+
+
+
+                      <div  class="d-xl-block d-lg-block d-md-block d-sm-none d-none" style="padding-right: 10px; padding-left: 10px; background-color:white; position: relative;">
+
+                        <div style="background-color: #e7eeee; padding: 40px; border-radius: 50px 50px 50px 50px; position: relative;">
+
+                        <div style="position: absolute; top: 11px; right: 19px; color: #283469;  font-weight: bold;  font-size: 35px;">{{timeConverter(dato.ss.timeRemain)}}</div>
+
+                        <img style="position: absolute; width: 25px; bottom: 0px; right: 0px;" src="../assets/etaBola.png">
+                      </div>
+                      </div>
+
+
+                      <div style="margin-left: auto; margin-right: auto;">
+
+                        <div class="text-center">
+
+                          <div class="tituloGris">RESTANTE</div>
+                          <div class="titulosAzulBold">{{ distanceConverter(dato.ss.distanceRemain) + " KM" }} </div>
+
+                        </div>
+
+                        <div class="text-center">
+                          <div class="tituloGris">LLEGADA</div>
+                          <div class="titulosAzulBold" >{{timeLlegadaConverter(dato.ss.timeRemain)}}</div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                  </div>
+
+                  <div class="form-group col-md-6  d-xl-block d-lg-block d-md-block d-sm-none d-none" style="border-left: solid 1px; border-color: #80808030; min-width: 160px;">
+
+                    <div style="font-size: 9px;">DATOS SUMINISTRADOS POR EL CLIENTE</div>
+
+                    <div style="display: flex; flex-wrap: wrap;">
+
+                    <div>
+                    <div class="titulosAzulBold">SALIDA</div>
+                 
+                    <div class="tituloGris" >{{new Date(dato.ss.schDepTime).toLocaleString()}}</div>
+                      
+                    </div>
+
+                    <div>
+
+                    <div class="titulosAzulBold">LLEGADA</div>
+    
+                    <div class="tituloGris">{{new Date(dato.ss.schArrTime).toLocaleString()}}</div>
+                      
+                    </div>
+                      
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div  style="width:75%; position: relative; margin-top: auto; margin-bottom: auto;">
                 <div class="col-12" style="font-size:14px; color: #bcbab9;">
                   {{ dato.startPlace.name}}
 
@@ -60,34 +130,12 @@
                   </div>
       
                   <div  class="progress-bar progress-bar-striped progress-bar-animated"
-                    :style="{width:fake.porcentaje+'%'}">{{ fake.porcentaje +"%"}}</div>
+                    :style="{width:(dato.ss.completed || 0)+'%'}">{{ (dato.ss.completed || 0) +"%"}}</div>
                 </div>
                 <div class="col-12" style="text-align: right; font-size:14px; color: #bcbab9; ">
                   {{ dato.endPlace.name }}
 
                 </div>
-
-              </div>
-
-              <div class="col header_status">
-                <button type="button" class="btn btn-circle btn-xl d-xl-block d-lg-block  d-md-block d-sm-none d-none">
-                  <span class="tituloBola">{{fake.tiempoRestante}}</span>{{ "Min" }}
-                  <img class="etaBT" src="../assets/etaBola.png">
-                </button>
-              <!--   style="border-right:dashed #bcbab9; padding-right: 20px;" -->
-                <div class="text-center" >
-                  <span style="font-size:14px; color: #bcbab9;">Restante</span>
-                  <br>
-                  <span>{{ fake.kilometrosRestantes + " KM" }} </span>
-                </div>
-
-                <div class="text-center">
-                  <span style="font-size:14px; color: #bcbab9;">llegada </span>
-                  <br>
-                  <span>{{ fake.horaLLegada }}</span>
-                </div>
-
-
 
               </div>
 
@@ -112,20 +160,14 @@
 
   import { ref, onMounted } from 'vue'; //defineProps
   import { find_Service_Shuttle, deleteShutter } from './DataConector.js'
-  import { getStatus } from './utils.js'
+  import { getStatus, ten } from './utils.js'
 
+
+let updater=ref()
+//clearInterval(updater.value);
 
   let fake={
-    porcentaje:50,
-    ultimaConexion:new Date().toLocaleString(),
-    tiempoRestante:50,
-    kilometrosRestantes:60,
-    horaLLegada:new Date().toLocaleTimeString()
-
-    // schDepTime: "2024-06-03T22:44:00.000-0400",
-    // schArrTime: "2024-06-03T22:44:00.000-0400",
-    //created: "2024-06-26T09:32:10.893-0400"
-    //trackerId
+    ultimaConexion:new Date().toLocaleString()
   }
 
 const view=ref({
@@ -150,11 +192,17 @@ const view=ref({
       clientId: null,
       userId: null,
       trackerId: null,
-      schDepTime: "2024-06-12T11:30:00.000-0400",
+      schDepTime: "2000-07-01T10:00:00.000-0400",
+      schArrTime: "2000-07-01T10:30:00.000-0400",
       startPlaceId: null,
       endPlaceId: null,
-      statusId: 5,
-      created: "2024-06-26T12:58:25.551-0400"
+      statusId: null,
+      created: "2000-07-01T11:58:06.516-0400",
+      distance: null,
+      distanceRemain: null,
+      travelTime: null,
+      timeRemain: null,
+      completed: null
     },
     startPlace: {
       id: null,
@@ -230,6 +278,65 @@ function consultarServicesList(){
   })
 }
 
+function timeConverter(timeRemain){
+
+  let timeConvertered=0
+
+
+  try{
+
+    timeRemain=timeRemain || 0
+
+    timeConvertered=ten(Math.round(timeRemain /60)) 
+
+    return timeConvertered 
+
+  }catch(err){
+    console.log(err)
+    return timeConvertered
+  }
+
+}
+
+function timeLlegadaConverter(segundos){
+
+  let timeLlegadaConvertered=0
+
+  try{
+    segundos=segundos || 0
+
+    let manana=new Date(new Date().getTime()+segundos*1000)
+    timeLlegadaConvertered=manana.toLocaleTimeString('en-US')
+
+    return timeLlegadaConvertered
+
+  }catch(err){
+    console.log(err)
+    return timeLlegadaConvertered
+  }
+
+}
+
+function distanceConverter(distanceRemain){
+
+
+  let distanceConvertered=0
+
+  try{
+
+    distanceRemain=distanceRemain || 0
+
+    distanceConvertered=Math.round(distanceRemain).toLocaleString('es-419')
+
+    return distanceConvertered
+
+  }catch(err){
+    console.log(err)
+    return distanceConvertered
+  }
+
+}
+
 
 /* const incomingData = defineProps({
   in_trackers: Object,
@@ -240,7 +347,14 @@ function consultarServicesList(){
 
 onMounted(async () => {
 
-  consultarServicesList()
+consultarServicesList()
+
+updater.value =setInterval(()=>{ 
+    consultarServicesList()
+
+  console.log('Me Actualizo Cada 15 segundos') 
+},15000)
+
 
 })
 
@@ -264,6 +378,18 @@ onMounted(async () => {
   color: white;
 }
 
+.titulosAzulBold{
+  color: #2f2f44; 
+  font-weight: 610;
+  font-size:12px; 
+}
+
+.tituloGris{
+  font-size:12px; 
+  color: #bcbab9;
+  font-weight: 600;
+}
+
 .popEliminado {
   /* background-color: #1e1f24; */
   background-color: white;
@@ -281,23 +407,8 @@ onMounted(async () => {
   box-shadow: rgba(0, 0, 0, 0.49) 0px 0px 30px 10px;
 }
 
-.tituloBola {
-  font-size: 40px;
-  font-family: "Truculenta", sans-serif;
-  font-weight: bold;
 
-}
-.important{
-  background-color:pink;
-}
 
-.etaBT {
-  position: absolute;
-  right: 8px;
-  bottom: -5px;
-  width: 31%;
-  max-width: 40px
-}
 
 .login {
   text-align: center;
@@ -309,50 +420,7 @@ onMounted(async () => {
   cursor: pointer;
 }
 
-@media (max-width: 1230px) {
-  .btn-circle.btn-xl {
-    width: auto;
-    height: 70%;
-    margin-top: 10%;
-    margin-bottom: 10%;
-  }
 
-  .tituloBola {
-    font-size: 20px;
-  }
-
-  .etaBT {
-    position: absolute;
-    right: 38px;
-    bottom: -5px;
-    width: 50%;
-    max-width: 50px
-  }
-
-}
-
-
-@media (max-width: 730px) {
-  .btn-circle.btn-xl {
-    width: auto;
-    height: 60%;
-    margin-top: 20%;
-    margin-bottom: 20%;
-  }
-
-  .tituloBola {
-    font-size: 20px;
-  }
-
-  .etaBT {
-    position: absolute;
-    right: 30px;
-    bottom: -5px;
-    width: 50%;
-    max-width: 50px
-  }
-
-}
 
 .card {
   box-shadow: rgba(0, 0, 0, 0.49) 5px 2px 5px 0px;

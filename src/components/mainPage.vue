@@ -6,7 +6,7 @@
         <div class="contentContainer">
 
             <div class="targetasContainer">
-                hola
+               
 
             </div>
 
@@ -41,7 +41,7 @@
 
 .contentContainer .targetasContainer {
     width: 100%;
-    background-color: red;
+    background-color: transparent;
 
 }
 

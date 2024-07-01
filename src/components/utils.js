@@ -3,7 +3,7 @@ export function getStatus(estatusN){
     switch (estatusN) {
 
   case 1:
-      return { label:'PENDING', color:'#e0e0e0' } 
+      return { label:'PENDING', color:'#d8e5e7' } 
       //El servicio de Shuttle no ha iniciado o esta a mas de 15 minutos de iniciar. (gris)          
 
   case 2: 
@@ -19,7 +19,7 @@ export function getStatus(estatusN){
      //Si ya arranco el Shuttle y esta tiempo para su destino. (verde)
 
   case 5:
-    return  { label:'WARNING', color: 'yellow' }  
+    return  { label:'WARNING', color: '#ecec7a' }  
      // Si ya arranco el Shuttle pero esta junto +/- ajustado al tiempo de llegada. (amarillo)
 
   case 6:
@@ -35,11 +35,11 @@ export function getStatus(estatusN){
      //si fue completado luego del tiempo establecido. (rojo con cotejo)
 
   case 9:
-    return { label:'CANCELED', color: 'grey' }  
+    return { label:'CANCELED', color: '#c4cad0' }  
       //Si este fue cancelado por el usuario. (gris con icono bloqueo)
 
   case 10:
-    return { label:'EXPIRED', color: 'red' }  
+    return { label:'EXPIRED', color: '#eb7272' }  
       //Si el Shuttle no fue completado y sobre paso el tiempo limite por 6 horas. (rojo con icono de X)
 
   default: 
@@ -49,7 +49,7 @@ export function getStatus(estatusN){
 }
 
 
-function  ten (i) {
+export function  ten (i) {
 
   return (i < 10 ? '0' : '')+i;
 
